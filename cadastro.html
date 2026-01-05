@@ -89,6 +89,28 @@
   </div>
 
 <script>
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBqgVTiFFzh0RsgD30PHqsC5H3slvKvqVY",
+  authDomain: "quizzes-bm.firebaseapp.com",
+  projectId: "quizzes-bm",
+  storageBucket: "quizzes-bm.firebasestorage.app",
+  messagingSenderId: "319086620986",
+  appId: "1:319086620986:web:0eee6e73ce60e50e8d2003",
+  measurementId: "G-L9TNBDX93N"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+  
   // 🔴 COLE AQUI O firebaseConfig DO PROJETO quizzes-web
   const firebaseConfig = {
     apiKey: "COLE_AQUI",
@@ -128,6 +150,7 @@
 
 </body>
 </html>
+
 
 
 
