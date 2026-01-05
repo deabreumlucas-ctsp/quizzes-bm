@@ -1,3 +1,19 @@
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    /* MESMO firebaseConfig */
+  };
+
+  firebase.initializeApp(firebaseConfig);
+
+  firebase.auth().onAuthStateChanged(user => {
+    if (!user) {
+      window.location.href = "login.html";
+    }
+  });
+</script>
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -129,4 +145,5 @@ function answer(opt){ if(!current) return; if(opt===current.a){ hits++; document
 function resetScore(){ hits=0; errors=0; document.getElementById('score').innerText=`Acertos: ${hits} | Erros: ${errors}`; document.getElementById('status').innerText=''; }
 </script>
 </body>
+
 </html>
