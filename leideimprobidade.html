@@ -1,0 +1,193 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz – Lei de Improbidade (Arts. 9º, 10 e 11)</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .card {
+      width: 100%;
+      max-width: 900px;
+      background: #020617;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,.5);
+    }
+    h1 {
+      margin-top: 0;
+      font-size: 1.4rem;
+      text-align: center;
+    }
+    .question {
+      font-size: 1.05rem;
+      line-height: 1.5;
+      margin: 20px 0;
+      padding: 14px;
+      background: #020617;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+    }
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .buttons button {
+      padding: 14px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: #fff;
+    }
+    .a { background: #2563eb; }
+    .b { background: #16a34a; }
+    .c { background: #dc2626; }
+    .buttons button:active { transform: scale(.98); }
+    .status {
+      margin-top: 15px;
+      font-size: 1rem;
+      min-height: 1.4em;
+    }
+    .score {
+      margin-top: 10px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .controls button {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      background: #334155;
+      color: #fff;
+    }
+    .controls button:hover { opacity: .9; }
+    @media (min-width: 600px) {
+      .buttons { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Quiz – Lei de Improbidade Administrativa</h1>
+
+    <div class="question" id="question">Clique em “Próxima” para iniciar o quiz.</div>
+
+    <div class="buttons">
+      <button class="a" onclick="answer('A')">A) Art. 9º – Enriquecimento ilícito</button>
+      <button class="b" onclick="answer('B')">B) Art. 10 – Dano ao erário</button>
+      <button class="c" onclick="answer('C')">C) Art. 11 – Princípios</button>
+    </div>
+
+    <div class="status" id="status"></div>
+    <div class="score" id="score">Acertos: 0 | Erros: 0</div>
+
+    <div class="controls">
+      <button onclick="nextQuestion()">▶ Próxima</button>
+      <button onclick="resetScore()">🔄 Zerar placar</button>
+    </div>
+  </div>
+
+<script>
+// A = Art. 9º | B = Art. 10 | C = Art. 11
+const questions = [
+  // ===== ART. 9º – ENRIQUECIMENTO ILÍCITO =====
+  { t: "Receber vantagem econômica de quem tenha interesse atingido por ação ou omissão do agente público.", a:'A' },
+  { t: "Perceber vantagem para facilitar aquisição, permuta ou locação por preço superior ao de mercado.", a:'A' },
+  { t: "Perceber vantagem para facilitar alienação ou locação por preço inferior ao de mercado.", a:'A' },
+  { t: "Utilizar bens ou trabalho de servidores públicos em obra ou serviço particular.", a:'A' },
+  { t: "Receber vantagem para tolerar exploração de atividade ilícita.", a:'A' },
+  { t: "Receber vantagem para fazer declaração falsa sobre dados técnicos de obras ou serviços.", a:'A' },
+  { t: "Adquirir bens desproporcionais à renda em razão do cargo.", a:'A' },
+  { t: "Aceitar emprego ou consultoria de pessoa com interesse atingido por suas atribuições.", a:'A' },
+  { t: "Perceber vantagem para intermediar liberação ou aplicação de verba pública.", a:'A' },
+  { t: "Receber vantagem para omitir ato de ofício.", a:'A' },
+  { t: "Incorporar ao patrimônio bens ou valores do acervo público.", a:'A' },
+  { t: "Usar em proveito próprio bens ou valores do patrimônio público.", a:'A' },
+
+  // ===== ART. 10 – DANO AO ERÁRIO =====
+  { t: "Facilitar incorporação indevida de bens públicos ao patrimônio particular.", a:'B' },
+  { t: "Permitir uso de bens públicos por particulares sem formalidades legais.", a:'B' },
+  { t: "Doar bens ou valores públicos sem observância das formalidades legais.", a:'B' },
+  { t: "Facilitar alienação ou locação de bem público por preço inferior ao de mercado.", a:'B' },
+  { t: "Facilitar aquisição de bem ou serviço por preço superior ao de mercado.", a:'B' },
+  { t: "Realizar operação financeira sem observar normas legais.", a:'B' },
+  { t: "Conceder benefício administrativo ou fiscal sem formalidades legais.", a:'B' },
+  { t: "Frustrar licitação ou processo seletivo causando perda patrimonial.", a:'B' },
+  { t: "Ordenar despesa não autorizada em lei ou regulamento.", a:'B' },
+  { t: "Agir ilicitamente na arrecadação de tributos ou conservação do patrimônio público.", a:'B' },
+  { t: "Liberar verba pública sem observância das normas pertinentes.", a:'B' },
+  { t: "Permitir que terceiro se enriqueça ilicitamente.", a:'B' },
+  { t: "Permitir uso de veículos ou materiais públicos em serviço particular.", a:'B' },
+  { t: "Celebrar contrato de gestão associada sem formalidades legais.", a:'B' },
+  { t: "Celebrar contrato de rateio sem dotação orçamentária suficiente.", a:'B' },
+  { t: "Facilitar incorporação indevida de bens públicos transferidos a entidades privadas.", a:'B' },
+  { t: "Permitir uso irregular de bens públicos em parcerias.", a:'B' },
+  { t: "Celebrar parcerias com entidades privadas sem formalidades legais.", a:'B' },
+  { t: "Agir ilicitamente na celebração ou fiscalização de parcerias.", a:'B' },
+  { t: "Liberar recursos de parcerias sem observância das normas.", a:'B' },
+
+  // ===== ART. 11 – PRINCÍPIOS DA ADMINISTRAÇÃO PÚBLICA =====
+  { t: "Revelar fato sigiloso para beneficiar terceiro ou colocar o Estado em risco.", a:'C' },
+  { t: "Negar publicidade a atos oficiais sem fundamento legal.", a:'C' },
+  { t: "Frustrar o caráter concorrencial de concurso ou licitação para obter vantagem.", a:'C' },
+  { t: "Deixar de prestar contas para ocultar irregularidades.", a:'C' },
+  { t: "Revelar medida econômica antes de divulgação oficial.", a:'C' },
+  { t: "Descumprir normas de celebração ou fiscalização de parcerias.", a:'C' },
+  { t: "Nomear cônjuge ou parente até o terceiro grau para cargo de confiança.", a:'C' },
+  { t: "Praticar publicidade institucional para promoção pessoal do agente público.", a:'C' }
+];
+
+let current = null;
+let hits = 0;
+let errors = 0;
+
+function nextQuestion() {
+  current = questions[Math.floor(Math.random() * questions.length)];
+  document.getElementById('question').innerText = current.t;
+  document.getElementById('status').innerText = '';
+}
+
+function answer(opt) {
+  if (!current) return;
+  if (opt === current.a) {
+    hits++;
+    document.getElementById('status').innerText = '✅ Correto';
+  } else {
+    errors++;
+    const map = { A: 'Art. 9º – Enriquecimento ilícito', B: 'Art. 10 – Dano ao erário', C: 'Art. 11 – Princípios' };
+    document.getElementById('status').innerText = `❌ Errado – resposta correta: ${map[current.a]}`;
+  }
+  document.getElementById('score').innerText = `Acertos: ${hits} | Erros: ${errors}`;
+}
+
+function resetScore() {
+  hits = 0;
+  errors = 0;
+  document.getElementById('score').innerText = `Acertos: ${hits} | Erros: ${errors}`;
+  document.getElementById('status').innerText = '';
+}
+</script>
+</body>
+</html>

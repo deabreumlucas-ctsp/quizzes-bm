@@ -1,0 +1,191 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz – ECA | Medidas</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .card {
+      width: 100%;
+      max-width: 950px;
+      background: #020617;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,.5);
+    }
+    h1 {
+      margin-top: 0;
+      font-size: 1.4rem;
+      text-align: center;
+    }
+    .question {
+      font-size: 1.05rem;
+      line-height: 1.5;
+      margin: 20px 0;
+      padding: 14px;
+      background: #020617;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+    }
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .buttons button {
+      padding: 14px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: #fff;
+    }
+    .a { background: #2563eb; }
+    .b { background: #16a34a; }
+    .c { background: #dc2626; }
+    .buttons button:active { transform: scale(.98); }
+    .status {
+      margin-top: 15px;
+      font-size: 1rem;
+      min-height: 1.4em;
+    }
+    .score {
+      margin-top: 10px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .controls button {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      background: #334155;
+      color: #fff;
+    }
+    .controls button:hover { opacity: .9; }
+    footer {
+      margin-top: 18px;
+      text-align: center;
+      font-size: .85rem;
+      color: #94a3b8;
+    }
+    @media (min-width: 600px) {
+      .buttons { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Quiz – ECA (Medidas)</h1>
+
+    <div class="question" id="question">Clique em “Próxima” para iniciar o quiz.</div>
+
+    <div class="buttons">
+      <button class="a" onclick="answer('A')">A) Medida socioeducativa (ADOLESCENTE)</button>
+      <button class="b" onclick="answer('B')">B) Medida aos PAIS ou RESPONSÁVEL</button>
+      <button class="c" onclick="answer('C')">C) Medida de PROTEÇÃO à CRIANÇA</button>
+    </div>
+
+    <div class="status" id="status"></div>
+    <div class="score" id="score">Acertos: 0 | Erros: 0</div>
+
+    <div class="controls">
+      <button onclick="nextQuestion()">▶ Próxima</button>
+      <button onclick="resetScore()">🔄 Zerar placar</button>
+    </div>
+  </div>
+
+<script>
+// A = ADOLESCENTE (Art. 112)
+// B = PAIS OU RESPONSÁVEL (Art. 129)
+// C = CRIANÇA – MEDIDAS DE PROTEÇÃO (Art. 101)
+
+const questions = [
+  // ===== ART. 112 – MEDIDAS SOCIOEDUCATIVAS (ADOLESCENTE) =====
+  { t: "Advertência aplicada ao adolescente", a:'A' },
+  { t: "Obrigação de reparar o dano", a:'A' },
+  { t: "Prestação de serviços à comunidade (máx. 6 meses e 8h semanais)", a:'A' },
+  { t: "Liberdade assistida (mínimo 6 meses)", a:'A' },
+  { t: "Inserção em regime de semiliberdade", a:'A' },
+  { t: "Internação em estabelecimento educacional (máx. 3 anos, reavaliação semestral)", a:'A' },
+  { t: "Aplicação cumulativa de medidas do art. 101, I a VI ao adolescente", a:'A' },
+
+  // ===== ART. 129 – MEDIDAS AOS PAIS OU RESPONSÁVEL =====
+  { t: "Encaminhamento a serviços ou programas de proteção e apoio à família", a:'B' },
+  { t: "Inclusão em programa de auxílio, orientação e tratamento a alcoólatras e toxicômanos", a:'B' },
+  { t: "Encaminhamento a tratamento psicológico ou psiquiátrico", a:'B' },
+  { t: "Encaminhamento a cursos ou programas de orientação", a:'B' },
+  { t: "Obrigação de matricular o filho ou pupilo e acompanhar frequência escolar", a:'B' },
+  { t: "Obrigação de encaminhar a criança ou adolescente a tratamento especializado", a:'B' },
+  { t: "Advertência aplicada aos pais ou responsável", a:'B' },
+  { t: "Perda da guarda", a:'B' },
+  { t: "Destituição da tutela", a:'B' },
+  { t: "Suspensão ou destituição do poder familiar", a:'B' },
+
+  // ===== ART. 101 – MEDIDAS DE PROTEÇÃO À CRIANÇA =====
+  { t: "Encaminhamento aos pais ou responsável, mediante termo de responsabilidade", a:'C' },
+  { t: "Orientação, apoio e acompanhamento temporários", a:'C' },
+  { t: "Matrícula e frequência obrigatórias em estabelecimento oficial de ensino fundamental", a:'C' },
+  { t: "Requisição de tratamento médico, psicológico ou psiquiátrico, inclusive à família", a:'C' },
+  { t: "Inclusão em programa de auxílio, orientação e tratamento a alcoólatras e toxicômanos", a:'C' },
+  { t: "Acolhimento institucional", a:'C' },
+  { t: "Inclusão em programa de acolhimento familiar", a:'C' },
+  { t: "Colocação em família substituta", a:'C' }
+];
+
+let current = null;
+let hits = 0;
+let errors = 0;
+
+function nextQuestion() {
+  current = questions[Math.floor(Math.random() * questions.length)];
+  document.getElementById('question').innerText = current.t;
+  document.getElementById('status').innerText = '';
+}
+
+function answer(opt) {
+  if (!current) return;
+  if (opt === current.a) {
+    hits++;
+    document.getElementById('status').innerText = '✅ Correto';
+  } else {
+    errors++;
+    const map = {
+      A: 'Medida socioeducativa (Art. 112 – Adolescente)',
+      B: 'Medida aos pais ou responsável (Art. 129)',
+      C: 'Medida de proteção à criança (Art. 101)'
+    };
+    document.getElementById('status').innerText = `❌ Errado – resposta correta: ${map[current.a]}`;
+  }
+  document.getElementById('score').innerText = `Acertos: ${hits} | Erros: ${errors}`;
+}
+
+function resetScore() {
+  hits = 0;
+  errors = 0;
+  document.getElementById('score').innerText = `Acertos: ${hits} | Erros: ${errors}`;
+  document.getElementById('status').innerText = '';
+}
+</script>
+</body>
+</html>

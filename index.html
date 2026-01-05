@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu Principal – Quizzes BM/RS</title>
+  <style>
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial,Helvetica,sans-serif;
+      background:#0f172a;
+      color:#e5e7eb;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:16px
+    }
+    .card{
+      width:100%;
+      max-width:700px;
+      background:#020617;
+      border-radius:14px;
+      padding:24px;
+      box-shadow:0 15px 35px rgba(0,0,0,.5)
+    }
+    h1{
+      text-align:center;
+      margin-top:0;
+      font-size:1.6rem
+    }
+    p{
+      text-align:center;
+      color:#cbd5f5;
+      margin-bottom:24px
+    }
+    .menu{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px
+    }
+    .menu a{
+      display:block;
+      padding:16px;
+      text-align:center;
+      text-decoration:none;
+      color:#fff;
+      border-radius:12px;
+      font-size:1.05rem;
+      background:#2563eb
+    }
+    .menu a:hover{opacity:.9}
+    .menu a:nth-child(2){background:#16a34a}
+    .menu a:nth-child(3){background:#dc2626}
+    .menu a:nth-child(4){background:#7c3aed}
+    .menu a:nth-child(5){background:#0ea5e9}
+    .menu a:nth-child(6){background:#f59e0b}
+    .menu a:nth-child(7){background:#22c55e}
+    footer{
+      margin-top:28px;
+      text-align:center;
+      font-size:.85rem;
+      color:#94a3b8
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>📚 Quizzes – BM/RS</h1>
+    <p>CTSP - 2026</p>
+
+    <div class="menu">
+      <a href='/competenciauniaoeconcorrente'>Competência Privativa × Concorrente</a>
+      <a href='/exclusivauniaoecomum'>Competência Exclusiva × Comum</a>
+      <a href='/direitoseprerrogativas'>Direitos × Prerrogativas</a>
+      <a href='/valoreticaedever'>Valor × Ética × Dever</a>
+      <a href='/leideimprobidade'>Lei de Improbidade (Arts. 9, 10 e 11)</a>
+      <a href='/transgressoes'>Transgressões Disciplinares</a>
+      <a href='/eca'>ECA – Medidas (Adolescente / Pais / Criança)</a>
+    </div>
+
+    <footer>
+      Créditos: SD PM ABREU
+    </footer>
+  </div>
+</body>
+</html>

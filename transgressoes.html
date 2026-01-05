@@ -1,0 +1,267 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz de Transgressões Disciplinares – BM/RS</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .card {
+      width: 100%;
+      max-width: 900px;
+      background: #020617;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,.5);
+    }
+    h1 {
+      margin-top: 0;
+      font-size: 1.4rem;
+      text-align: center;
+    }
+    .question {
+      font-size: 1.05rem;
+      line-height: 1.5;
+      margin: 20px 0;
+      padding: 14px;
+      background: #020617;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+    }
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .buttons button {
+      padding: 14px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: #fff;
+    }
+    .a { background: #2563eb; }
+    .b { background: #16a34a; }
+    .c { background: #dc2626; }
+    .buttons button:active { transform: scale(.98); }
+    .status {
+      margin-top: 15px;
+      font-size: 1rem;
+      min-height: 1.4em;
+    }
+    .score {
+      margin-top: 10px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .controls button {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      background: #334155;
+      color: #fff;
+    }
+    .controls button:hover { opacity: .9; }
+    @media (min-width: 600px) {
+      .buttons { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Quiz de Transgressões Disciplinares – BM/RS</h1>
+
+    <div class="question" id="question">Clique em “Próxima” para iniciar o quiz.</div>
+
+    <div class="buttons">
+      <button class="a" onclick="answer('A')">A) Leve</button>
+      <button class="b" onclick="answer('B')">B) Média</button>
+      <button class="c" onclick="answer('C')">C) Grave</button>
+    </div>
+
+    <div class="status" id="status"></div>
+    <div class="score" id="score">Acertos: 0 | Erros: 0</div>
+
+    <div class="controls">
+      <button onclick="nextQuestion()">▶ Próxima</button>
+      <button onclick="resetScore()">🔄 Zerar placar</button>
+    </div>
+  </div>
+
+<script>
+// ================== BANCO COMPLETO ==================
+const questions = [
+// ================= LEVES (A) =================
+{ t: "Deixar de comunicar ao superior, tão logo possível, a execução de ordem legal recebida.", a:'A' },
+{ t: "Deixar o subordinado de cumprimentar superior, uniformizado ou não, ou o superior de responder ao cumprimento.", a:'A' },
+{ t: "Chegar atrasado ao expediente, ao serviço para o qual esteja nominalmente escalado ou a qualquer ato em que deva tomar parte ou assistir.", a:'A' },
+{ t: "Tornar parte em jogos proibidos, ou jogar a dinheiro.", a:'A' },
+{ t: "Içar ou arriar, sem ordem, bandeira ou insígnia de autoridade.", a:'A' },
+{ t: "Executar toques ou fazer sinais regulamentares sem ordem para tal.", a:'A' },
+{ t: "Conversar ou fazer ruídos em ocasião, lugar ou hora imprópria.", a:'A' },
+{ t: "Fumar em lugar ou ocasião onde isso seja vedado ou quando se dirigir a superior.", a:'A' },
+{ t: "Usar uniforme de forma inadequada ou descurar do asseio pessoal ou coletivo.", a:'A' },
+{ t: "Negar-se a receber alimentação, uniforme, equipamentos ou objetos destinados.", a:'A' },
+{ t: "Conduzir veículo ou pilotar aeronave ou embarcação da Corporação sem autorização.", a:'A' },
+{ t: "Penetrar, sem permissão, em aposento destinado a superior ou local vedado.", a:'A' },
+{ t: "Usar distintivos, insígnias ou condecorações indevidamente.", a:'A' },
+{ t: "Deixar de portar documento de identidade funcional quando exigido.", a:'A' },
+
+// ================= MÉDIAS (B) =================
+{ t: "Condutas dolosas tipificadas como infração penal de menor potencial ofensivo.", a:'B' },
+{ t: "Deixar de cumprir ou de fazer cumprir normas regulamentares.", a:'B' },
+{ t: "Deixar de comunicar ato ou fato irregular que presenciar ou tiver ciência.", a:'B' },
+{ t: "Deixar de participar impossibilidade de comparecer ao OPM ou ato de serviço.", a:'B' },
+{ t: "Permutar serviço sem permissão da autoridade competente.", a:'B' },
+{ t: "Deixar de comunicar iminente perturbação da ordem pública.", a:'B' },
+{ t: "Deixar de dar informações em processos quando lhe competir.", a:'B' },
+{ t: "Deixar de encaminhar documento no prazo legal.", a:'B' },
+{ t: "Retardar o cumprimento de ordem legal.", a:'B' },
+{ t: "Deixar de encaminhar recurso ou documento à autoridade competente.", a:'B' },
+{ t: "Deixar de se apresentar nos prazos regulamentares, sem motivo justificado.", a:'B' },
+{ t: "Deixar de se apresentar ao fim de afastamento interrompido.", a:'B' },
+{ t: "Encaminhar Parte ou instaurar PADM sem fundamento.", a:'B' },
+{ t: "Trabalhar mal, por falta de atenção.", a:'B' },
+{ t: "Afastar-se do local em que deva encontrar-se por força de ordens.", a:'B' },
+{ t: "Faltar ou retirar-se de ato de serviço sem autorização.", a:'B' },
+{ t: "Representar o OPM ou a Corporação sem autorização.", a:'B' },
+{ t: "Tomar compromisso pelo OPM sem autorização.", a:'B' },
+{ t: "Comparecer fardado a manifestações de caráter político.", a:'B' },
+{ t: "Entrar ou sair de OPM com força armada sem ordem.", a:'B' },
+{ t: "Dirigir viatura policial com negligência, imprudência ou imperícia.", a:'B' },
+{ t: "Ofender a moral e os bons costumes.", a:'B' },
+{ t: "Portar-se sem compostura em lugar público.", a:'B' },
+{ t: "Ser indiscreto sobre assunto oficial.", a:'B' },
+{ t: "Espalhar boato ou notícia tendenciosa sobre ME.", a:'B' },
+{ t: "Frequentar lugares incompatíveis com o decoro da classe.", a:'B' },
+{ t: "Publicar documentos oficiais sem permissão.", a:'B' },
+{ t: "Responder de maneira desrespeitosa a superior, igual ou subordinado.", a:'B' },
+{ t: "Desconsiderar ou desrespeitar autoridade civil.", a:'B' },
+{ t: "Não zelar devidamente por bens da Fazenda Pública por negligência.", a:'B' },
+{ t: "Servir-se ou apropriar-se de objetos sem autorização.", a:'B' },
+{ t: "Manter sob chefia parente até segundo grau.", a:'B' },
+{ t: "Autorizar ou executar manobras perigosas.", a:'B' },
+{ t: "Não ter dedicação no preparo próprio ou de subordinados.", a:'B' },
+{ t: "Causar ou contribuir para acidente de serviço.", a:'B' },
+{ t: "Desrespeitar regras de trânsito ou ordem administrativa.", a:'B' },
+{ t: "Retardar ou prejudicar serviço de polícia judiciária militar.", a:'B' },
+{ t: "Andar armado em trajes civis sem ocultar arma.", a:'B' },
+{ t: "Concorrer para discórdia ou inimizade entre camaradas.", a:'B' },
+{ t: "Apresentar parte ou recurso em termos desrespeitosos ou de má-fé.", a:'B' },
+
+// ================= GRAVES (C) =================
+{ t: "Condutas dolosas tipificadas como crimes.", a:'C' },
+{ t: "Faltar com a verdade.", a:'C' },
+{ t: "Trabalhar mal, intencionalmente.", a:'C' },
+{ t: "Simular doença para esquivar-se ao dever.", a:'C' },
+{ t: "Utilizar-se do anonimato para fins ilícitos.", a:'C' },
+{ t: "Deixar de punir transgressor da disciplina.", a:'C' },
+{ t: "Deixar de comunicar irregularidade de que tenha ciência.", a:'C' },
+{ t: "Impedir superior de acompanhar apuração.", a:'C' },
+{ t: "Deixar de assumir responsabilidade por atos próprios ou de subordinados.", a:'C' },
+{ t: "Retardar ou prejudicar medida judicial ou policial.", a:'C' },
+{ t: "Dificultar recurso ou direito de petição.", a:'C' },
+{ t: "Abandonar o serviço para o qual tenha sido designado.", a:'C' },
+{ t: "Fazer transações pecuniárias com bens da Fazenda Pública.", a:'C' },
+{ t: "Realizar transação pecuniária envolvendo superior ou subordinado.", a:'C' },
+{ t: "Usar armamento, munição ou equipamento não autorizado.", a:'C' },
+{ t: "Disparar arma por imprudência ou desnecessariamente.", a:'C' },
+{ t: "Não observar regras de segurança com arma.", a:'C' },
+{ t: "Empregar violência no ato de serviço.", a:'C' },
+{ t: "Maltratar preso sob sua guarda.", a:'C' },
+{ t: "Permitir objeto proibido com preso.", a:'C' },
+{ t: "Abrir dependência do quartel sem autorização.", a:'C' },
+{ t: "Ofender, provocar ou desafiar superior, igual ou subordinado.", a:'C' },
+{ t: "Travar luta corporal.", a:'C' },
+{ t: "Introduzir material inflamável ou explosivo em OPM.", a:'C' },
+{ t: "Introduzir ou distribuir publicação contra disciplina ou moral.", a:'C' },
+{ t: "Introduzir bebidas alcoólicas, tóxicos ou entorpecentes em OPM.", a:'C' },
+{ t: "Fazer uso ou induzir uso de drogas ilícitas.", a:'C' },
+{ t: "Apropriar-se de objetos do Estado ou particulares.", a:'C' },
+{ t: "Retirar viatura, objeto ou animal sem ordem.", a:'C' },
+{ t: "Extraviar ou danificar bens da Fazenda Pública.", a:'C' },
+{ t: "Retardar ou prejudicar serviço que deva cumprir.", a:'C' },
+{ t: "Descumprir preceitos legais na custódia de preso.", a:'C' },
+{ t: "Usar expressões discriminatórias.", a:'C' },
+{ t: "Aconselhar descumprimento de ordem legal.", a:'C' },
+{ t: "Dar ordem ilegal ou inexequível.", a:'C' },
+{ t: "Participar da gerência ou comércio privado.", a:'C' },
+{ t: "Usar posto ou graduação para obter vantagem.", a:'C' },
+{ t: "Utilizar condição de ME para ato ilícito.", a:'C' },
+{ t: "Desviar subordinado ou meios materiais para proveito próprio.", a:'C' },
+{ t: "Censurar publicamente decisão de superior.", a:'C' },
+{ t: "Desacreditar igual ou subordinado.", a:'C' },
+{ t: "Determinar execução de serviço não previsto em lei.", a:'C' },
+{ t: "Cometer assédio sexual usando cargo.", a:'C' },
+{ t: "Violar ou não preservar local de crime.", a:'C' },
+{ t: "Receber propina ou comissão.", a:'C' },
+{ t: "Praticar usura.", a:'C' },
+{ t: "Procurar parte interessada para vantagem indevida.", a:'C' },
+{ t: "Não garantir integridade física de preso.", a:'C' },
+{ t: "Liberar preso sem atribuição legal.", a:'C' },
+{ t: "Evadir-se ou tentar evadir-se de escolta.", a:'C' },
+{ t: "Publicar fatos que comprometam a segurança ou disciplina.", a:'C' },
+{ t: "Omitir dados indispensáveis em documento.", a:'C' },
+{ t: "Transportar pessoal ou material sem autorização.", a:'C' },
+{ t: "Ameaçar ou induzir alguém a declarar falsamente.", a:'C' },
+{ t: "Faltar ao expediente ou serviço escalado.", a:'C' },
+{ t: "Afastar-se da área de patrulhamento.", a:'C' },
+{ t: "Evadir-se da detenção.", a:'C' },
+{ t: "Exercer atividade profissional incompatível.", a:'C' },
+{ t: "Apresentar-se em serviço embriagado ou sob efeito de drogas.", a:'C' },
+{ t: "Usar adereços não condizentes com preceitos militares.", a:'C' },
+{ t: "Deixar de cumprir ordem regulamentar ou legal.", a:'C' }
+];
+
+let current = null;
+let hits = 0;
+let errors = 0;
+
+function nextQuestion() {
+  current = questions[Math.floor(Math.random() * questions.length)];
+  document.getElementById('question').innerText = current.t;
+  document.getElementById('status').innerText = '';
+}
+
+function answer(opt) {
+  if (!current) return;
+  if (opt === current.a) {
+    hits++;
+    document.getElementById('status').innerText = '✅ Correto';
+  } else {
+    errors++;
+    document.getElementById('status').innerText = `❌ Errado – resposta correta: ${current.a}`;
+  }
+  document.getElementById('score').innerText = `Acertos: ${hits} | Erros: ${errors}`;
+}
+
+function resetScore() {
+  hits = 0;
+  errors = 0;
+  document.getElementById('score').innerText = `Acertos: ${hits} | Erros: ${errors}`;
+  document.getElementById('status').innerText = '';
+}
+</script>
+</body>
+</html>

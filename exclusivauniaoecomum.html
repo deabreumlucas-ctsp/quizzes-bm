@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz – Competência Exclusiva x Comum</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#0f172a;color:#e5e7eb;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
+.card{width:100%;max-width:950px;background:#020617;border-radius:14px;padding:20px;box-shadow:0 15px 35px rgba(0,0,0,.5)}
+h1{text-align:center;font-size:1.4rem;margin-top:0}
+.question{font-size:1.05rem;line-height:1.5;margin:20px 0;padding:14px;border:1px solid #1e293b;border-radius:10px}
+.buttons{display:grid;grid-template-columns:1fr;gap:10px}
+.buttons button{padding:14px;font-size:1rem;border:none;border-radius:10px;cursor:pointer;color:#fff}
+.a{background:#2563eb}
+.b{background:#16a34a}
+.status{margin-top:15px;min-height:1.4em}
+.score{margin-top:10px;font-weight:bold;text-align:center}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.controls button{flex:1;padding:12px;border-radius:10px;border:none;background:#334155;color:#fff;cursor:pointer}
+@media(min-width:600px){.buttons{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="card">
+<h1>Quiz – Competência Exclusiva da União x Comum (CF)</h1>
+<div class="question" id="question">Clique em “Próxima” para iniciar</div>
+<div class="buttons">
+<button class="a" onclick="answer('A')">A) Exclusiva da União (Art. 21)</button>
+<button class="b" onclick="answer('B')">B) Competência Comum (Art. 23)</button>
+</div>
+<div class="status" id="status"></div>
+<div class="score" id="score">Acertos: 0 | Erros: 0</div>
+<div class="controls">
+<button onclick="nextQuestion()">▶ Próxima</button>
+<button onclick="resetScore()">🔄 Zerar placar</button>
+</div>
+</div>
+<script>
+// A = ART. 21 | B = ART. 23
+const questions = [
+// ===== ART. 21 – EXCLUSIVA DA UNIÃO =====
+{t:"Manter relações com Estados estrangeiros e participar de organizações internacionais",a:'A'},
+{t:"Declarar a guerra e celebrar a paz",a:'A'},
+{t:"Assegurar a defesa nacional",a:'A'},
+{t:"Permitir trânsito ou permanência de forças estrangeiras no território nacional",a:'A'},
+{t:"Decretar estado de sítio, estado de defesa e intervenção federal",a:'A'},
+{t:"Autorizar e fiscalizar a produção e o comércio de material bélico",a:'A'},
+{t:"Emitir moeda",a:'A'},
+{t:"Administrar reservas cambiais e fiscalizar operações financeiras",a:'A'},
+{t:"Elaborar e executar planos nacionais e regionais de ordenação do território",a:'A'},
+{t:"Manter o serviço postal e o correio aéreo nacional",a:'A'},
+{t:"Explorar serviços de telecomunicações",a:'A'},
+{t:"Explorar serviços de radiodifusão sonora e de sons e imagens",a:'A'},
+{t:"Explorar serviços e instalações de energia elétrica",a:'A'},
+{t:"Explorar navegação aérea e infraestrutura aeroportuária",a:'A'},
+{t:"Explorar transporte ferroviário e aquaviário interestadual",a:'A'},
+{t:"Explorar transporte rodoviário interestadual e internacional de passageiros",a:'A'},
+{t:"Explorar portos marítimos, fluviais e lacustres",a:'A'},
+{t:"Organizar e manter o Judiciário, MP e Defensoria do DF e Territórios",a:'A'},
+{t:"Organizar e manter as polícias e bombeiros militares do DF",a:'A'},
+{t:"Organizar serviços oficiais de estatística, geografia e cartografia nacionais",a:'A'},
+{t:"Classificar diversões públicas e programas de rádio e TV",a:'A'},
+{t:"Conceder anistia",a:'A'},
+{t:"Planejar e promover defesa contra calamidades públicas",a:'A'},
+{t:"Instituir sistema nacional de gerenciamento de recursos hídricos",a:'A'},
+{t:"Instituir diretrizes para desenvolvimento urbano",a:'A'},
+{t:"Estabelecer princípios do sistema nacional de viação",a:'A'},
+{t:"Executar polícia marítima, aeroportuária e de fronteiras",a:'A'},
+{t:"Explorar serviços e instalações nucleares",a:'A'},
+{t:"Organizar e executar a inspeção do trabalho",a:'A'},
+{t:"Estabelecer condições para atividade de garimpagem",a:'A'},
+{t:"Organizar e fiscalizar proteção e tratamento de dados pessoais",a:'A'},
+// ===== ART. 23 – COMPETÊNCIA COMUM =====
+{t:"Zelar pela guarda da Constituição, das leis e das instituições democráticas",a:'B'},
+{t:"Cuidar da saúde e assistência pública",a:'B'},
+{t:"Proteger documentos e bens de valor histórico e cultural",a:'B'},
+{t:"Impedir destruição e descaracterização de bens culturais",a:'B'},
+{t:"Proporcionar acesso à cultura, educação, ciência e tecnologia",a:'B'},
+{t:"Proteger o meio ambiente e combater a poluição",a:'B'},
+{t:"Preservar florestas, fauna e flora",a:'B'},
+{t:"Fomentar produção agropecuária e organizar abastecimento alimentar",a:'B'},
+{t:"Promover programas de moradia e saneamento básico",a:'B'},
+{t:"Combater pobreza e promover integração social",a:'B'},
+{t:"Fiscalizar concessões de recursos hídricos e minerais",a:'B'},
+{t:"Implantar política de educação para a segurança do trânsito",a:'B'}
+];
+let current=null,hits=0,errors=0;
+function nextQuestion(){current=questions[Math.floor(Math.random()*questions.length)];document.getElementById('question').innerText=current.t;document.getElementById('status').innerText='';}
+function answer(opt){if(!current)return;if(opt===current.a){hits++;document.getElementById('status').innerText='✅ Correto';}else{errors++;document.getElementById('status').innerText=`❌ Errado – resposta correta: ${current.a==='A'?'Exclusiva (Art.21)':'Comum (Art.23)'}`;}document.getElementById('score').innerText=`Acertos: ${hits} | Erros: ${errors}`;}
+function resetScore(){hits=0;errors=0;document.getElementById('score').innerText=`Acertos: ${hits} | Erros: ${errors}`;document.getElementById('status').innerText='';}
+</script>
+</body>
+</html>

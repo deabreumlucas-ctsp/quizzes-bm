@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz – Direitos e Prerrogativas | BM/RS</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .card {
+      width: 100%;
+      max-width: 900px;
+      background: #020617;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,.5);
+    }
+    h1 {
+      margin-top: 0;
+      font-size: 1.4rem;
+      text-align: center;
+    }
+    .question {
+      font-size: 1.05rem;
+      line-height: 1.5;
+      margin: 20px 0;
+      padding: 14px;
+      background: #020617;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+    }
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .buttons button {
+      padding: 14px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: #fff;
+    }
+    .a { background: #2563eb; }
+    .b { background: #16a34a; }
+    .buttons button:active { transform: scale(.98); }
+    .status {
+      margin-top: 15px;
+      font-size: 1rem;
+      min-height: 1.4em;
+    }
+    .score {
+      margin-top: 10px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .controls button {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      background: #334155;
+      color: #fff;
+    }
+    .controls button:hover { opacity: .9; }
+    @media (min-width: 600px) {
+      .buttons { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Quiz – Direitos e Prerrogativas (BM/RS)</h1>
+
+    <div class="question" id="question">Clique em “Próxima” para iniciar o quiz.</div>
+
+    <div class="buttons">
+      <button class="a" onclick="answer('A')">A) Direito</button>
+      <button class="b" onclick="answer('B')">B) Prerrogativa</button>
+    </div>
+
+    <div class="status" id="status"></div>
+    <div class="score" id="score">Acertos: 0 | Erros: 0</div>
+
+    <div class="controls">
+      <button onclick="nextQuestion()">▶ Próxima</button>
+      <button onclick="resetScore()">🔄 Zerar placar</button>
+    </div>
+  </div>
+
+<script>
+// ================= BANCO COMPLETO =================
+// A = DIREITO | B = PRERROGATIVA
+const questions = [
+  // ===== DIREITOS – Art. 46 =====
+  { t: "Garantia da patente, em toda a sua plenitude, quando Oficial.", a:'A' },
+  { t: "Uso das designações hierárquicas.", a:'A' },
+  { t: "Desempenho de cargos e funções correspondentes ao posto ou graduação.", a:'A' },
+  { t: "Percepção de vencimentos, proventos e outras vantagens pecuniárias.", a:'A' },
+  { t: "Transporte para si, dependentes e bens pessoais quando movimentado por necessidade do serviço.", a:'A' },
+  { t: "Promoções.", a:'A' },
+  { t: "Transferência para a reserva remunerada ou reforma.", a:'A' },
+  { t: "Férias e licenças.", a:'A' },
+  { t: "Demissão voluntária e licenciamento voluntário da ativa.", a:'A' },
+  { t: "Porte de arma para Oficiais, nas hipóteses legais.", a:'A' },
+  { t: "Porte de arma pelas Praças, com restrições legais.", a:'A' },
+  { t: "Aquisição de arma de uso permitido por meio da Brigada Militar.", a:'A' },
+  { t: "Assistência judiciária gratuita por atos praticados em serviço.", a:'A' },
+  { t: "Assistência social e médico-hospitalar.", a:'A' },
+  { t: "Saúde, higiene e segurança do trabalho.", a:'A' },
+
+  // ===== PRERROGATIVAS – Art. 86 =====
+  { t: "Uso de títulos, uniformes, distintivos, insígnias e emblemas correspondentes ao posto ou graduação.", a:'B' },
+  { t: "Honras, tratamento e sinais de respeito previstos em lei ou regulamento.", a:'B' },
+  { t: "Cumprimento de prisão ou detenção em organização policial-militar.", a:'B' },
+  { t: "Julgamento em foro especial nos crimes militares.", a:'B' },
+  { t: "Livre ingresso e trânsito, em objeto de serviço, em recinto público ou privado.", a:'B' },
+  { t: "Prioridade em serviço de transporte ou comunicação, quando em serviço urgente.", a:'B' },
+  { t: "Carteira de identidade funcional que consigne direitos e prerrogativas.", a:'B' },
+  { t: "Não confinamento em cela no caso de punição administrativa.", a:'B' }
+];
+
+let current = null;
+let hits = 0;
+let errors = 0;
+
+function nextQuestion() {
+  current = questions[Math.floor(Math.random() * questions.length)];
+  document.getElementById('question').innerText = current.t;
+  document.getElementById('status').innerText = '';
+}
+
+function answer(opt) {
+  if (!current) return;
+  if (opt === current.a) {
+    hits++;
+    document.getElementById('status').innerText = '✅ Correto';
+  } else {
+    errors++;
+    document.getElementById('status').innerText = `❌ Errado – resposta correta: ${current.a === 'A' ? 'Direito' : 'Prerrogativa'}`;
+  }
+  document.getElementById('score').innerText = `Acertos: ${hits} | Erros: ${errors}`;
+}
+
+function resetScore() {
+  hits = 0;
+  errors = 0;
+  document.getElementById('score').innerText = `Acertos: ${hits} | Erros: ${errors}`;
+  document.getElementById('status').innerText = '';
+}
+</script>
+</body>
+</html>

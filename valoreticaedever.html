@@ -1,0 +1,181 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz – Valor, Ética e Dever | BM/RS</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .card {
+      width: 100%;
+      max-width: 900px;
+      background: #020617;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,.5);
+    }
+    h1 {
+      margin-top: 0;
+      font-size: 1.4rem;
+      text-align: center;
+    }
+    .question {
+      font-size: 1.05rem;
+      line-height: 1.5;
+      margin: 20px 0;
+      padding: 14px;
+      background: #020617;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+    }
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .buttons button {
+      padding: 14px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: #fff;
+    }
+    .a { background: #2563eb; }
+    .b { background: #16a34a; }
+    .c { background: #dc2626; }
+    .buttons button:active { transform: scale(.98); }
+    .status {
+      margin-top: 15px;
+      font-size: 1rem;
+      min-height: 1.4em;
+    }
+    .score {
+      margin-top: 10px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .controls button {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      background: #334155;
+      color: #fff;
+    }
+    .controls button:hover { opacity: .9; }
+    @media (min-width: 600px) {
+      .buttons { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Quiz – Valor, Ética e Dever (BM/RS)</h1>
+
+    <div class="question" id="question">Clique em “Próxima” para iniciar o quiz.</div>
+
+    <div class="buttons">
+      <button class="a" onclick="answer('A')">A) Valor</button>
+      <button class="b" onclick="answer('B')">B) Ética</button>
+      <button class="c" onclick="answer('C')">C) Dever</button>
+    </div>
+
+    <div class="status" id="status"></div>
+    <div class="score" id="score">Acertos: 0 | Erros: 0</div>
+
+    <div class="controls">
+      <button onclick="nextQuestion()">▶ Próxima</button>
+      <button onclick="resetScore()">🔄 Zerar placar</button>
+    </div>
+  </div>
+
+<script>
+// A = VALOR | B = ÉTICA | C = DEVER
+const questions = [
+  // ===== VALOR POLICIAL-MILITAR – Art. 24 =====
+  { t: "Dedicação ao serviço policial para preservação da segurança da comunidade, mesmo com risco da própria vida.", a:'A' },
+  { t: "Fé na elevada missão da Brigada Militar.", a:'A' },
+  { t: "Espírito de corpo e orgulho do servidor militar pela organização onde serve.", a:'A' },
+  { t: "Amor à profissão policial-militar e entusiasmo com que é exercida.", a:'A' },
+  { t: "Aprimoramento técnico profissional.", a:'A' },
+
+  // ===== ÉTICA POLICIAL-MILITAR – Art. 25 =====
+  { t: "Amar a verdade e a responsabilidade como fundamento da dignidade pessoal.", a:'B' },
+  { t: "Exercer com autoridade, eficiência e probidade as funções do cargo.", a:'B' },
+  { t: "Respeitar a dignidade da pessoa humana.", a:'B' },
+  { t: "Acatar as autoridades civis.", a:'B' },
+  { t: "Cumprir e fazer cumprir leis, regulamentos, instruções e ordens.", a:'B' },
+  { t: "Ser justo e imparcial no julgamento dos atos e na apreciação do mérito dos subordinados.", a:'B' },
+  { t: "Zelar pelo preparo moral, intelectual e físico, próprio e dos subordinados.", a:'B' },
+  { t: "Empregar as energias em benefício do serviço.", a:'B' },
+  { t: "Praticar a camaradagem e desenvolver o espírito de cooperação.", a:'B' },
+  { t: "Ser discreto nas atitudes, maneiras e linguagem escrita e falada.", a:'B' },
+  { t: "Abster-se de tratar fora do âmbito apropriado matéria sigilosa.", a:'B' },
+  { t: "Cumprir os deveres de cidadão.", a:'B' },
+  { t: "Proceder de maneira ilibada na vida pública e na particular.", a:'B' },
+  { t: "Observar as normas da boa educação.", a:'B' },
+  { t: "Abster-se de usar posto ou graduação para obter facilidades pessoais.", a:'B' },
+  { t: "Conduzir-se, mesmo fora do serviço, de modo a preservar disciplina e decoro.", a:'B' },
+  { t: "Zelar pelo bom nome da Brigada Militar e de seus integrantes.", a:'B' },
+
+  // ===== DEVERES POLICIAIS-MILITARES – Art. 29 =====
+  { t: "Dedicação ao serviço policial-militar e fidelidade à Pátria e à comunidade.", a:'C' },
+  { t: "Culto aos símbolos nacionais e estaduais.", a:'C' },
+  { t: "Probidade e lealdade em todas as circunstâncias.", a:'C' },
+  { t: "Disciplina e respeito à hierarquia.", a:'C' },
+  { t: "Rigoroso cumprimento das obrigações e das ordens.", a:'C' },
+  { t: "Tratar o subordinado dignamente e com urbanidade.", a:'C' }
+];
+
+let current = null;
+let hits = 0;
+let errors = 0;
+
+function nextQuestion() {
+  current = questions[Math.floor(Math.random() * questions.length)];
+  document.getElementById('question').innerText = current.t;
+  document.getElementById('status').innerText = '';
+}
+
+function answer(opt) {
+  if (!current) return;
+  if (opt === current.a) {
+    hits++;
+    document.getElementById('status').innerText = '✅ Correto';
+  } else {
+    errors++;
+    const map = { A: 'Valor', B: 'Ética', C: 'Dever' };
+    document.getElementById('status').innerText = `❌ Errado – resposta correta: ${map[current.a]}`;
+  }
+  document.getElementById('score').innerText = `Acertos: ${hits} | Erros: ${errors}`;
+}
+
+function resetScore() {
+  hits = 0;
+  errors = 0;
+  document.getElementById('score').innerText = `Acertos: ${hits} | Erros: ${errors}`;
+  document.getElementById('status').innerText = '';
+}
+</script>
+</body>
+</html>

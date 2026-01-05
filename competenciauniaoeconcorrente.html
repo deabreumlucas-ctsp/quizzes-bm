@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz – Competência Privativa x Concorrente</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .card {
+      width: 100%;
+      max-width: 900px;
+      background: #020617;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,.5);
+    }
+    h1 { margin-top:0; font-size:1.4rem; text-align:center; }
+    .question {
+      font-size:1.05rem; line-height:1.5; margin:20px 0; padding:14px;
+      background:#020617; border:1px solid #1e293b; border-radius:10px;
+    }
+    .buttons { display:grid; grid-template-columns:1fr; gap:10px; }
+    .buttons button {
+      padding:14px; font-size:1rem; border:none; border-radius:10px; cursor:pointer; color:#fff;
+    }
+    .a { background:#2563eb; }
+    .b { background:#16a34a; }
+    .buttons button:active { transform:scale(.98); }
+    .status { margin-top:15px; font-size:1rem; min-height:1.4em; }
+    .score { margin-top:10px; font-weight:bold; text-align:center; }
+    .controls { display:flex; gap:10px; flex-wrap:wrap; margin-top:20px; }
+    .controls button {
+      flex:1; padding:12px; border-radius:10px; border:none; cursor:pointer;
+      background:#334155; color:#fff;
+    }
+    .controls button:hover { opacity:.9; }
+    @media (min-width:600px){ .buttons{ grid-template-columns:repeat(2,1fr);} }
+  </style>
+</head>
+<body>
+<div class="card">
+  <h1>Quiz – Competência Privativa x Concorrente (CF)</h1>
+
+  <div class="question" id="question">Clique em “Próxima” para iniciar o quiz.</div>
+
+  <div class="buttons">
+    <button class="a" onclick="answer('A')">A) Privativa da União (Art. 22)</button>
+    <button class="b" onclick="answer('B')">B) Concorrente (Art. 24)</button>
+  </div>
+
+  <div class="status" id="status"></div>
+  <div class="score" id="score">Acertos: 0 | Erros: 0</div>
+
+  <div class="controls">
+    <button onclick="nextQuestion()">▶ Próxima</button>
+    <button onclick="resetScore()">🔄 Zerar placar</button>
+  </div>
+</div>
+
+<script>
+// A = ART. 22 (PRIVATIVA) | B = ART. 24 (CONCORRENTE)
+const questions = [
+  // ===== ART. 22 – COMPETÊNCIA PRIVATIVA DA UNIÃO =====
+  { t:"Direito civil, comercial, penal, processual, eleitoral, agrário, marítimo, aeronáutico, espacial e do trabalho", a:'A' },
+  { t:"Desapropriação", a:'A' },
+  { t:"Requisições civis e militares, em caso de iminente perigo e em tempo de guerra", a:'A' },
+  { t:"Águas, energia, informática, telecomunicações e radiodifusão", a:'A' },
+  { t:"Serviço postal", a:'A' },
+  { t:"Sistema monetário e de medidas, títulos e garantias dos metais", a:'A' },
+  { t:"Política de crédito, câmbio, seguros e transferência de valores", a:'A' },
+  { t:"Comércio exterior e interestadual", a:'A' },
+  { t:"Diretrizes da política nacional de transportes", a:'A' },
+  { t:"Regime dos portos e navegação lacustre, fluvial, marítima, aérea e aeroespacial", a:'A' },
+  { t:"Trânsito e transporte", a:'A' },
+  { t:"Jazidas, minas, outros recursos minerais e metalurgia", a:'A' },
+  { t:"Nacionalidade, cidadania e naturalização", a:'A' },
+  { t:"Populações indígenas", a:'A' },
+  { t:"Emigração e imigração, entrada, extradição e expulsão de estrangeiros", a:'A' },
+  { t:"Organização do sistema nacional de emprego e condições para o exercício de profissões", a:'A' },
+  { t:"Organização judiciária do DF e Territórios e do Ministério Público e Defensoria dos Territórios", a:'A' },
+  { t:"Sistema estatístico, cartográfico e de geologia nacionais", a:'A' },
+  { t:"Sistemas de poupança, captação e garantia da poupança popular", a:'A' },
+  { t:"Sistemas de consórcios e sorteios", a:'A' },
+  { t:"Normas gerais sobre organização e efetivos das polícias militares e corpos de bombeiros militares", a:'A' },
+  { t:"Competência da Polícia Federal e das polícias rodoviária e ferroviária federais", a:'A' },
+  { t:"Seguridade social", a:'A' },
+  { t:"Diretrizes e bases da educação nacional", a:'A' },
+  { t:"Registros públicos", a:'A' },
+  { t:"Atividades nucleares de qualquer natureza", a:'A' },
+  { t:"Normas gerais de licitação e contratação", a:'A' },
+  { t:"Defesa territorial, defesa aeroespacial, defesa marítima, defesa civil e mobilização nacional", a:'A' },
+  { t:"Propaganda comercial", a:'A' },
+  { t:"Proteção e tratamento de dados pessoais", a:'A' },
+
+  // ===== ART. 24 – COMPETÊNCIA CONCORRENTE =====
+  { t:"Direito tributário, financeiro, penitenciário, econômico e urbanístico", a:'B' },
+  { t:"Orçamento", a:'B' },
+  { t:"Juntas comerciais", a:'B' },
+  { t:"Custas dos serviços forenses", a:'B' },
+  { t:"Produção e consumo", a:'B' },
+  { t:"Florestas, caça, pesca, fauna, conservação da natureza e proteção do meio ambiente", a:'B' },
+  { t:"Proteção ao patrimônio histórico, cultural, artístico, turístico e paisagístico", a:'B' },
+  { t:"Responsabilidade por dano ao meio ambiente e ao consumidor", a:'B' },
+  { t:"Educação, cultura, ensino, desporto, ciência, tecnologia, pesquisa, desenvolvimento e inovação", a:'B' },
+  { t:"Criação, funcionamento e processo do juizado de pequenas causas", a:'B' },
+  { t:"Procedimentos em matéria processual", a:'B' },
+  { t:"Previdência social, proteção e defesa da saúde", a:'B' },
+  { t:"Assistência jurídica e Defensoria pública", a:'B' },
+  { t:"Proteção e integração social das pessoas portadoras de deficiência", a:'B' },
+  { t:"Proteção à infância e à juventude", a:'B' },
+  { t:"Organização, garantias, direitos e deveres das polícias civis", a:'B' }
+];
+
+let current=null, hits=0, errors=0;
+function nextQuestion(){ current=questions[Math.floor(Math.random()*questions.length)]; document.getElementById('question').innerText=current.t; document.getElementById('status').innerText=''; }
+function answer(opt){ if(!current) return; if(opt===current.a){ hits++; document.getElementById('status').innerText='✅ Correto'; } else { errors++; document.getElementById('status').innerText=`❌ Errado – resposta correta: ${current.a==='A'?'Privativa (Art.22)':'Concorrente (Art.24)'}`; } document.getElementById('score').innerText=`Acertos: ${hits} | Erros: ${errors}`; }
+function resetScore(){ hits=0; errors=0; document.getElementById('score').innerText=`Acertos: ${hits} | Erros: ${errors}`; document.getElementById('status').innerText=''; }
+</script>
+</body>
+</html>
