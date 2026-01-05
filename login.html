@@ -30,17 +30,8 @@
       padding:24px;
       box-shadow:0 15px 35px rgba(0,0,0,.5)
     }
-    h1{
-      text-align:center;
-      margin-top:0;
-      font-size:1.4rem
-    }
-    p{
-      text-align:center;
-      color:#cbd5f5;
-      margin-bottom:24px;
-      font-size:.95rem
-    }
+    h1{text-align:center;margin-top:0}
+    p{text-align:center;color:#cbd5f5;margin-bottom:24px}
     input{
       width:100%;
       padding:14px;
@@ -60,9 +51,7 @@
       margin-bottom:12px
     }
     .btn-login{background:#2563eb}
-    .btn-login:hover{opacity:.9}
     .btn-cadastro{background:#16a34a}
-    .btn-cadastro:hover{opacity:.9}
     footer{
       text-align:center;
       margin-top:18px;
@@ -83,13 +72,10 @@
     <button type="button" class="btn-login" onclick="login()">Entrar</button>
     <button type="button" class="btn-cadastro" onclick="irCadastro()">Criar conta</button>
 
-    <footer>
-      Créditos: SD PM ABREU
-    </footer>
+    <footer>Créditos: SD PM ABREU</footer>
   </div>
 
 <script>
-  // 🔐 MESMA CONFIGURAÇÃO DO cadastro.html
   const firebaseConfig = {
     apiKey: "AIzaSyBqgVTiFFzh0RsgD30PHqsC5H3slvKvqVY",
     authDomain: "quizzes-bm.firebaseapp.com",
@@ -99,21 +85,20 @@
     appId: "1:319086620986:web:0eee6e73ce60e50e8d2003"
   };
 
-  firebase.initializeApp(firebaseConfig);
+  // 🔐 Evita erro de inicializar duas vezes
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
 
   function login(){
     const email = document.getElementById("email").value;
     const senha = document.getElementById("senha").value;
 
-    if(!email || !senha){
-      alert("Preencha e-mail e senha.");
-      return;
-    }
-
     firebase.auth()
       .signInWithEmailAndPassword(email, senha)
       .then(() => {
-        window.location.href = "index.html";
+        alert("Login OK! Indo para o menu...");
+        window.location.href = "./index.html";
       })
       .catch(error => {
         alert("Erro: " + error.message);
@@ -121,12 +106,9 @@
   }
 
   function irCadastro(){
-    window.location.href = "cadastro.html";
+    window.location.href = "./cadastro.html";
   }
 </script>
 
 </body>
 </html>
-
-
-
