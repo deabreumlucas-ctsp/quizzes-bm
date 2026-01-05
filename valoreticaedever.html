@@ -1,3 +1,19 @@
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    /* MESMO firebaseConfig */
+  };
+
+  firebase.initializeApp(firebaseConfig);
+
+  firebase.auth().onAuthStateChanged(user => {
+    if (!user) {
+      window.location.href = "login.html";
+    }
+  });
+</script>
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -178,4 +194,5 @@ function resetScore() {
 }
 </script>
 </body>
+
 </html>
