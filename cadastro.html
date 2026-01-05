@@ -3,58 +3,131 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Criar Conta</title>
+  <title>Criar Conta – Quizzes BM/RS</title>
 
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+  <style>
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#0f172a;
+      font-family:Arial,Helvetica,sans-serif;
+      color:#e5e7eb;
+      padding:16px
+    }
+    .card{
+      width:100%;
+      max-width:420px;
+      background:#020617;
+      border-radius:14px;
+      padding:24px;
+      box-shadow:0 15px 35px rgba(0,0,0,.5)
+    }
+    h1{
+      text-align:center;
+      margin-top:0;
+      font-size:1.4rem
+    }
+    p{
+      text-align:center;
+      color:#cbd5f5;
+      margin-bottom:24px;
+      font-size:.95rem
+    }
+    input{
+      width:100%;
+      padding:14px;
+      margin-bottom:14px;
+      border-radius:10px;
+      border:none;
+      font-size:1rem
+    }
+    button{
+      width:100%;
+      padding:14px;
+      border:none;
+      border-radius:12px;
+      font-size:1rem;
+      color:#fff;
+      cursor:pointer;
+      margin-bottom:12px
+    }
+    .btn-criar{background:#16a34a}
+    .btn-criar:hover{opacity:.9}
+    .btn-voltar{background:#2563eb}
+    .btn-voltar:hover{opacity:.9}
+    footer{
+      text-align:center;
+      margin-top:18px;
+      font-size:.8rem;
+      color:#94a3b8
+    }
+  </style>
 </head>
 
 <body>
+  <div class="card">
+    <h1>📝 Criar Conta</h1>
+    <p>Quizzes – BM/RS</p>
 
-<h2>Criar Conta</h2>
+    <input type="email" id="email" placeholder="E-mail">
+    <input type="password" id="senha" placeholder="Senha (mínimo 6 caracteres)">
 
-<input type="email" id="email" placeholder="Email"><br><br>
-<input type="password" id="senha" placeholder="Senha (mín. 6 caracteres)"><br><br>
+    <button type="button" class="btn-criar" onclick="criarConta()">Criar conta</button>
+    <button type="button" class="btn-voltar" onclick="voltar()">Voltar para o login</button>
 
-<button type="button" onclick="criarConta()">Criar conta</button>
-<button type="button" onclick="voltar()">Voltar</button>
+    <footer>
+      Créditos: SD PM ABREU
+    </footer>
+  </div>
 
 <script>
-  // 🔴 COLE AQUI O firebaseConfig REAL (SEM COMENTÁRIOS)
+  // 🔴 COLE AQUI O firebaseConfig DO PROJETO quizzes-web
   const firebaseConfig = {
-    apiKey: "SUA_API_KEY",
-    authDomain: "SEU_PROJETO.firebaseapp.com",
-    projectId: "SEU_PROJETO",
-    storageBucket: "SEU_PROJETO.appspot.com",
-    messagingSenderId: "XXXX",
-    appId: "XXXX"
+    apiKey: "COLE_AQUI",
+    authDomain: "COLE_AQUI",
+    projectId: "COLE_AQUI",
+    storageBucket: "COLE_AQUI",
+    messagingSenderId: "COLE_AQUI",
+    appId: "COLE_AQUI"
   };
 
   firebase.initializeApp(firebaseConfig);
 
-  function criarConta() {
-    alert("Tentando criar conta...");
+  function criarConta(){
+    const email = document.getElementById("email").value;
+    const senha = document.getElementById("senha").value;
+
+    if(!email || !senha){
+      alert("Preencha e-mail e senha.");
+      return;
+    }
 
     firebase.auth()
-      .createUserWithEmailAndPassword(
-        document.getElementById("email").value,
-        document.getElementById("senha").value
-      )
+      .createUserWithEmailAndPassword(email, senha)
       .then(() => {
-        alert("Conta criada com sucesso!");
+        alert("Conta criada com sucesso! Faça login.");
         window.location.href = "login.html";
       })
-      .catch(e => {
-        alert("ERRO: " + e.message);
+      .catch(error => {
+        alert("Erro: " + error.message);
       });
   }
 
-  function voltar() {
+  function voltar(){
     window.location.href = "login.html";
   }
 </script>
 
 </body>
 </html>
+
 
 
