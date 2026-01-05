@@ -1,19 +1,26 @@
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
 <script>
   const firebaseConfig = {
-    /* MESMO firebaseConfig */
+    apiKey: "SUA_API_KEY",
+    authDomain: "SEU_PROJECT.firebaseapp.com",
+    projectId: "SEU_PROJECT",
+    storageBucket: "SEU_PROJECT.appspot.com",
+    messagingSenderId: "XXXX",
+    appId: "XXXX"
   };
 
   firebase.initializeApp(firebaseConfig);
 
-  firebase.auth().onAuthStateChanged(user => {
+  firebase.auth().onAuthStateChanged(function(user) {
     if (!user) {
       window.location.href = "login.html";
     }
   });
 </script>
+
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -103,4 +110,5 @@
   </div>
 </body>
 </html>
+
 
