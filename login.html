@@ -2,46 +2,100 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login – Quizzes BM/RS</title>
 
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0f172a;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #e5e7eb;
+      padding: 16px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: #020617;
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 15px 35px rgba(0,0,0,.5);
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 0;
+      font-size: 1.4rem;
+    }
+
+    p {
+      text-align: center;
+      color: #cbd5f5;
+      margin-bottom: 24px;
+      font-size: 0.95rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 14px;
+      border-radius: 10px;
+      border: none;
+      font-size: 1rem;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      color: #fff;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+
+    .btn-login {
+      background: #2563eb;
+    }
+
+    .btn-login:hover {
+      opacity: .9;
+    }
+
+    .btn-cadastro {
+      background: #16a34a;
+    }
+
+    .btn-cadastro:hover {
+      opacity: .9;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 18px;
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+  </style>
 </head>
+
 <body>
+  <div class="card">
+    <h1>🔐 Acesso ao Sistema</h1>
+    <p>Quizzes – BM/RS</p>
 
-<h2>Login</h2>
+    <input type="email" id="email" placeholder="E-mail">
+    <inpu
 
-<input type="email" id="email" placeholder="Email"><br><br>
-<input type="password" id="senha" placeholder="Senha"><br><br>
-
-<button onclick="login()">Entrar</button>
-<button onclick="cadastro()">Cadastrar</button>
-
-<script>
-  const firebaseConfig = {
-    /* COLE AQUI O firebaseConfig QUE VOCÊ COPIOU */
-  };
-
-  firebase.initializeApp(firebaseConfig);
-
-  function login() {
-    firebase.auth().signInWithEmailAndPassword(
-      email.value,
-      senha.value
-    ).then(() => {
-      window.location.href = "index.html";
-    }).catch(e => alert(e.message));
-  }
-
-  function cadastro() {
-    firebase.auth().createUserWithEmailAndPassword(
-      email.value,
-      senha.value
-    ).then(() => {
-      alert("Cadastro realizado! Faça login.");
-    }).catch(e => alert(e.message));
-  }
-</script>
-
-</body>
-</html>
