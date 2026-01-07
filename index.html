@@ -8,6 +8,7 @@
   <!-- Firebase (modo compat para HTML puro) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
   <style>
     *{box-sizing:border-box}
@@ -80,6 +81,27 @@
       font-size:.9rem
     }
 
+    textarea{
+      width:100%;
+      min-height:90px;
+      padding:12px;
+      border-radius:10px;
+      border:none;
+      font-size:1rem;
+      margin-bottom:10px
+    }
+
+    .btn-sugestao{
+      width:100%;
+      padding:12px;
+      border:none;
+      border-radius:12px;
+      background:#16a34a;
+      color:#fff;
+      font-size:1rem;
+      cursor:pointer
+    }
+
     footer{
       margin-top:28px;
       text-align:center;
@@ -109,10 +131,24 @@
       <a href="eca.html">ECA – Medidas (Adolescente / Pais / Criança)</a>
     </div>
 
+    <!-- 💬 CAIXA DE SUGESTÕES -->
+    <hr style="margin:30px 0;border-color:#1e293b">
+
+    <h3 style="text-align:center">💬 Caixa de sugestões</h3>
+
+    <textarea id="sugestao" placeholder="Escreva sua sugestão, ideia ou crítica aqui..."></textarea>
+
+    <button class="btn-sugestao" onclick="enviarSugestao()">
+      Enviar sugestão
+    </button>
+
+    <footer>
+      Créditos: SD PM ABREU
+    </footer>
   </div>
 
 <script>
-  // 🔐 CONFIGURAÇÃO FIREBASE (MESMA DO LOGIN E CADASTRO)
+  // 🔐 CONFIGURAÇÃO FIREBASE
   const firebaseConfig = {
     apiKey: "AIzaSyBqgVTiFFzh0RsgD30PHqsC5H3slvKvqVY",
     authDomain: "quizzes-bm.firebaseapp.com",
@@ -126,13 +162,13 @@
     firebase.initializeApp(firebaseConfig);
   }
 
+  const db = firebase.firestore();
+
   // 🔐 PROTEÇÃO DO INDEX
   firebase.auth().onAuthStateChanged(user => {
     if (!user) {
-      // não logado → volta para login
       window.location.replace("login.html");
     } else {
-      // logado → mostra o conteúdo
       document.getElementById("conteudo").style.display = "block";
     }
   });
@@ -142,8 +178,37 @@
       window.location.replace("login.html");
     });
   }
+
+  // 💬 ENVIO DE SUGESTÃO
+  function enviarSugestao(){
+    const texto = document.getElementById("sugestao").value.trim();
+    const user = firebase.auth().currentUser;
+
+    if(!texto){
+      alert("Digite uma sugestão antes de enviar.");
+      return;
+    }
+
+    if(!user){
+      alert("Você precisa estar logado.");
+      return;
+    }
+
+    db.collection("sugestoes").add({
+      email: user.email,
+      mensagem: texto,
+      data: new Date()
+    })
+    .then(() => {
+      alert("Sugestão enviada! Obrigado 🙌");
+      document.getElementById("sugestao").value = "";
+    })
+    .catch(err => {
+      alert("Erro ao enviar sugestão.");
+      console.error(err);
+    });
+  }
 </script>
 
 </body>
 </html>
-
