@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meu Perfil – Quizzes BM/RS</title>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <style>
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial,Helvetica,sans-serif;
+      background:#0f172a;
+      color:#e5e7eb;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:16px
+    }
+    .card{
+      width:100%;
+      max-width:420px;
+      background:#020617;
+      border-radius:14px;
+      padding:24px;
+      box-shadow:0 15px 35px rgba(0,0,0,.5)
+    }
+    h1{
+      text-align:center;
+      margin-top:0
+    }
+    label{
+      font-size:.9rem;
+      color:#cbd5f5
+    }
+    input{
+      width:100%;
+      padding:14px;
+      margin:8px 0 16px 0;
+      border-radius:10px;
+      border:none;
+      font-size:1rem
+    }
+    button{
+      width:100%;
+      padding:14px;
+      border:none;
+      border-radius:12px;
+      font-size:1rem;
+      cursor:pointer;
+      background:#16a34a;
+      color:#fff
+    }
+    .voltar{
+      margin-top:12px;
+      background:#2563eb
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="card">
+  <h1>👤 Meu perfil</h1>
+
+  <label>E-mail</label>
+  <input type="email" id="email" disabled>
+
+  <label>Nome / Apelido</label>
+  <input type="text" id="nome" placeholder="Digite seu nome">
+
+  <button onclick="salvarPerfil()">Salvar alterações</button>
+  <button class="voltar" onclick="voltar()">Voltar ao menu</button>
+</div>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBqgVTiFFzh0RsgD30PHqsC5H3slvKvqVY",
+    authDomain: "quizzes-bm.firebaseapp.com",
+    projectId: "quizzes-bm",
+    storageBucket: "quizzes-bm.firebasestorage.app",
+    messagingSenderId: "319086620986",
+    appId: "1:319086620986:web:0eee6e73ce60e50e8d2003"
+  };
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+
+  const db = firebase.firestore();
+
+  firebase.auth().onAuthStateChanged(user => {
+    if (!user) {
+      window.location.replace("login.html");
+      return;
+    }
+
+    document.getElementById("email").value = user.email;
+
+    db.collection("users").doc(user.uid).get().then(doc => {
+      if (doc.exists) {
+        document.getElementById("nome").value = doc.data().nome || "";
+      }
+    });
+  });
+
+  function salvarPerfil(){
+    const user = firebase.auth().currentUser;
+    const nome = document.getElementById("nome").value.trim();
+
+    if (!nome) {
+      alert("Digite um nome.");
+      return;
+    }
+
+    db.collection("users").doc(user.uid).set({
+      email: user.email,
+      nome: nome
+    }, { merge: true })
+    .then(() => {
+      alert("Perfil atualizado com sucesso!");
+    })
+    .catch(err => {
+      alert("Erro ao salvar perfil.");
+      console.error(err);
+    });
+  }
+
+  function voltar(){
+    window.location.href = "index.html";
+  }
+</script>
+
+</body>
+</html>
