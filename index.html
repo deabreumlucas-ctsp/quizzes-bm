@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Menu Principal – Quizzes BM/RS</title>
 
-  <!-- Firebase (modo compat para HTML puro) -->
+  <!-- Firebase (modo compat) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -81,24 +81,26 @@
       font-size:.9rem
     }
 
+    /* 🔽 CAIXA DE SUGESTÃO MENOR */
     textarea{
       width:100%;
-      min-height:90px;
-      padding:12px;
+      min-height:60px;
+      padding:10px;
       border-radius:10px;
       border:none;
-      font-size:1rem;
-      margin-bottom:10px
+      font-size:.95rem;
+      margin-bottom:10px;
+      resize:vertical
     }
 
     .btn-sugestao{
       width:100%;
-      padding:12px;
+      padding:10px;
       border:none;
       border-radius:12px;
       background:#16a34a;
       color:#fff;
-      font-size:1rem;
+      font-size:.95rem;
       cursor:pointer
     }
 
@@ -132,19 +134,16 @@
     </div>
 
     <!-- 💬 CAIXA DE SUGESTÕES -->
-    <hr style="margin:30px 0;border-color:#1e293b">
+    <hr style="margin:28px 0;border-color:#1e293b">
 
-    <h3 style="text-align:center">💬 Caixa de sugestões</h3>
+    <h3 style="text-align:center;margin-bottom:8px">💬 Caixa de sugestões</h3>
 
-    <textarea id="sugestao" placeholder="Escreva sua sugestão, ideia ou crítica aqui..."></textarea>
+    <textarea id="sugestao" placeholder="Escreva sua sugestão ou crítica..."></textarea>
 
-    <button class="btn-sugestao" onclick="enviarSugestao()">
+    <button type="button" class="btn-sugestao" onclick="enviarSugestao()">
       Enviar sugestão
     </button>
 
-    <footer>
-      Créditos: SD PM ABREU
-    </footer>
   </div>
 
 <script>
@@ -179,17 +178,17 @@
     });
   }
 
-  // 💬 ENVIO DE SUGESTÃO
+  // 💬 ENVIO DE SUGESTÃO (CORRIGIDO)
   function enviarSugestao(){
     const texto = document.getElementById("sugestao").value.trim();
     const user = firebase.auth().currentUser;
 
-    if(!texto){
+    if (!texto) {
       alert("Digite uma sugestão antes de enviar.");
       return;
     }
 
-    if(!user){
+    if (!user) {
       alert("Você precisa estar logado.");
       return;
     }
@@ -203,12 +202,13 @@
       alert("Sugestão enviada! Obrigado 🙌");
       document.getElementById("sugestao").value = "";
     })
-    .catch(err => {
+    .catch(error => {
       alert("Erro ao enviar sugestão.");
-      console.error(err);
+      console.error("Erro Firestore:", error);
     });
   }
 </script>
 
 </body>
 </html>
+
