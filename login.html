@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -30,8 +30,34 @@
       padding:24px;
       box-shadow:0 15px 35px rgba(0,0,0,.5)
     }
-    h1{text-align:center;margin-top:0}
-    p{text-align:center;color:#cbd5f5;margin-bottom:18px}
+
+    /* 🔹 BLOCO DE APRESENTAÇÃO */
+    .apresentacao{
+      text-align:center;
+      margin-bottom:22px;
+      padding-bottom:18px;
+      border-bottom:1px solid #1e293b
+    }
+    .apresentacao h1{
+      margin:0;
+      font-size:1.4rem
+    }
+    .apresentacao p{
+      margin-top:8px;
+      font-size:.95rem;
+      color:#cbd5f5
+    }
+
+    h2{
+      text-align:center;
+      margin-top:0
+    }
+    .sub{
+      text-align:center;
+      color:#cbd5f5;
+      margin-bottom:18px
+    }
+
     input{
       width:100%;
       padding:14px;
@@ -69,8 +95,19 @@
 
 <body>
   <div class="card">
-    <h1>🔐 Login</h1>
-    <p>Quizzes – BM/RS</p>
+
+    <!-- 🔥 APRESENTAÇÃO DO SITE -->
+    <div class="apresentacao">
+      <h1>📚 QUIZZES CTSP 2026</h1>
+      <p>
+        Plataforma de quizzes focada em <strong>diferenças que as bancas adoram cobrar</strong>.<br>
+        Ideal para fixar conceitos, evitar pegadinhas e acelerar a memorização.
+      </p>
+    </div>
+
+    <!-- LOGIN -->
+    <h2>🔐 Login</h2>
+    <p class="sub">Brigada Militar – RS</p>
 
     <input type="email" id="email" placeholder="E-mail">
     <input type="password" id="senha" placeholder="Senha">
@@ -79,6 +116,10 @@
     <button class="btn-cadastro" onclick="irCadastro()">Criar conta</button>
 
     <button class="btn-reset" onclick="resetSenha()">Esqueci minha senha</button>
+
+    <div class="aviso">
+      📧 Caso utilize recuperação de senha, verifique também a pasta <strong>SPAM</strong>.
+    </div>
 
   </div>
 
@@ -135,6 +176,8 @@
 
 </body>
 </html>
+
+
 
 
 
