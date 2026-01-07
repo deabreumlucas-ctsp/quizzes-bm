@@ -68,7 +68,7 @@
       display:flex;
       justify-content:space-between;
       align-items:center;
-      margin-bottom:16px
+      margin-bottom:10px
     }
 
     .logout{
@@ -81,7 +81,6 @@
       font-size:.9rem
     }
 
-    /* 🔽 CAIXA DE SUGESTÃO MENOR */
     textarea{
       width:100%;
       min-height:60px;
@@ -103,58 +102,51 @@
       font-size:.95rem;
       cursor:pointer
     }
-
-    footer{
-      margin-top:28px;
-      text-align:center;
-      font-size:.85rem;
-      color:#94a3b8
-    }
   </style>
 </head>
 
 <body>
 
-  <div class="card" style="display:none" id="conteudo">
-    <div class="top-bar">
-      <h1>📚 Quizzes – BM/RS</h1>
+<div class="card" style="display:none" id="conteudo">
 
-      <!-- 🔹 BOTÃO DE PERFIL ADICIONADO -->
-      <div>
-        <button class="logout" onclick="window.location.href='perfil.html'" style="background:#2563eb;margin-right:8px">
-          👤 Perfil
-        </button>
-        <button class="logout" onclick="logout()">Sair</button>
-      </div>
+  <!-- TOPO -->
+  <div class="top-bar">
+    <h1>📚 Quizzes – BM/RS</h1>
+
+    <div>
+      <button class="logout" onclick="window.location.href='perfil.html'" style="background:#2563eb;margin-right:8px">
+        👤 Perfil
+      </button>
+      <button class="logout" onclick="logout()">Sair</button>
     </div>
-
-    <p>CTSP - 2026</p>
-
-    <div class="menu">
-      <a href="competenciauniaoeconcorrente.html">Competência Privativa × Concorrente</a>
-      <a href="exclusivauniaoecomum.html">Competência Exclusiva × Comum</a>
-      <a href="direitoseprerrogativas.html">Direitos × Prerrogativas</a>
-      <a href="valoreticaedever.html">Valor × Ética × Dever</a>
-      <a href="leideimprobidade.html">Lei de Improbidade (Arts. 9, 10 e 11)</a>
-      <a href="transgressoes.html">Transgressões Disciplinares</a>
-      <a href="eca.html">ECA – Medidas (Adolescente / Pais / Criança)</a>
-    </div>
-
-    <!-- 💬 CAIXA DE SUGESTÕES -->
-    <hr style="margin:28px 0;border-color:#1e293b">
-
-    <h3 style="text-align:center;margin-bottom:8px">💬 Caixa de sugestões</h3>
-
-    <textarea id="sugestao" placeholder="Escreva sua sugestão ou crítica..."></textarea>
-
-    <button type="button" class="btn-sugestao" onclick="enviarSugestao()">
-      Enviar sugestão
-    </button>
-
   </div>
 
+  <!-- BEM-VINDO -->
+  <p id="boasVindas">Bem-vindo</p>
+
+  <!-- MENU -->
+  <div class="menu">
+    <a href="competenciauniaoeconcorrente.html">Competência Privativa × Concorrente</a>
+    <a href="exclusivauniaoecomum.html">Competência Exclusiva × Comum</a>
+    <a href="direitoseprerrogativas.html">Direitos × Prerrogativas</a>
+    <a href="valoreticaedever.html">Valor × Ética × Dever</a>
+    <a href="leideimprobidade.html">Lei de Improbidade (Arts. 9, 10 e 11)</a>
+    <a href="transgressoes.html">Transgressões Disciplinares</a>
+    <a href="eca.html">ECA – Medidas (Adolescente / Pais / Criança)</a>
+  </div>
+
+  <!-- SUGESTÕES -->
+  <hr style="margin:28px 0;border-color:#1e293b">
+
+  <h3 style="text-align:center;margin-bottom:8px">💬 Caixa de sugestões</h3>
+
+  <textarea id="sugestao" placeholder="Escreva sua sugestão ou crítica..."></textarea>
+
+  <button class="btn-sugestao" onclick="enviarSugestao()">Enviar sugestão</button>
+
+</div>
+
 <script>
-  // 🔐 CONFIGURAÇÃO FIREBASE
   const firebaseConfig = {
     apiKey: "AIzaSyBqgVTiFFzh0RsgD30PHqsC5H3slvKvqVY",
     authDomain: "quizzes-bm.firebaseapp.com",
@@ -170,13 +162,24 @@
 
   const db = firebase.firestore();
 
-  // 🔐 PROTEÇÃO DO INDEX
+  // 🔐 LOGIN + BEM-VINDO
   firebase.auth().onAuthStateChanged(user => {
     if (!user) {
       window.location.replace("login.html");
-    } else {
-      document.getElementById("conteudo").style.display = "block";
+      return;
     }
+
+    document.getElementById("conteudo").style.display = "block";
+
+    db.collection("users").doc(user.uid).get()
+      .then(doc => {
+        const nome = doc.exists ? doc.data().nome : "";
+        document.getElementById("boasVindas").innerText =
+          nome ? "Bem-vindo, " + nome : "Bem-vindo";
+      })
+      .catch(() => {
+        document.getElementById("boasVindas").innerText = "Bem-vindo";
+      });
   });
 
   function logout(){
@@ -185,18 +188,12 @@
     });
   }
 
-  // 💬 ENVIO DE SUGESTÃO
   function enviarSugestao(){
     const texto = document.getElementById("sugestao").value.trim();
     const user = firebase.auth().currentUser;
 
     if (!texto) {
-      alert("Digite uma sugestão antes de enviar.");
-      return;
-    }
-
-    if (!user) {
-      alert("Você precisa estar logado.");
+      alert("Digite uma sugestão.");
       return;
     }
 
@@ -209,15 +206,17 @@
       alert("Sugestão enviada! Obrigado 🙌");
       document.getElementById("sugestao").value = "";
     })
-    .catch(error => {
+    .catch(err => {
       alert("Erro ao enviar sugestão.");
-      console.error("Erro Firestore:", error);
+      console.error(err);
     });
   }
 </script>
 
 </body>
 </html>
+
+
 
 
 
