@@ -5,9 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Criar Conta – Quizzes BM/RS</title>
 
-  <!-- Firebase (modo compat para HTML puro) -->
+  <!-- Firebase (modo compat) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
   <style>
     *{box-sizing:border-box}
@@ -60,15 +61,7 @@
       margin-bottom:12px
     }
     .btn-criar{background:#16a34a}
-    .btn-criar:hover{opacity:.9}
     .btn-voltar{background:#2563eb}
-    .btn-voltar:hover{opacity:.9}
-    footer{
-      text-align:center;
-      margin-top:18px;
-      font-size:.8rem;
-      color:#94a3b8
-    }
   </style>
 </head>
 
@@ -77,16 +70,15 @@
     <h1>📝 Criar Conta</h1>
     <p>Quizzes – BM/RS</p>
 
+    <input type="text" id="nome" placeholder="Nome ou apelido">
     <input type="email" id="email" placeholder="E-mail">
     <input type="password" id="senha" placeholder="Senha (mínimo 6 caracteres)">
 
     <button type="button" class="btn-criar" onclick="criarConta()">Criar conta</button>
     <button type="button" class="btn-voltar" onclick="voltar()">Voltar para o login</button>
-
   </div>
 
 <script>
-  // 🔐 CONFIGURAÇÃO REAL DO FIREBASE (PROJETO quizzes-bm)
   const firebaseConfig = {
     apiKey: "AIzaSyBqgVTiFFzh0RsgD30PHqsC5H3slvKvqVY",
     authDomain: "quizzes-bm.firebaseapp.com",
@@ -96,20 +88,31 @@
     appId: "1:319086620986:web:0eee6e73ce60e50e8d2003"
   };
 
-  // Inicializa Firebase (modo compat)
-  firebase.initializeApp(firebaseConfig);
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+
+  const db = firebase.firestore();
 
   function criarConta(){
-    const email = document.getElementById("email").value;
+    const nome = document.getElementById("nome").value.trim();
+    const email = document.getElementById("email").value.trim();
     const senha = document.getElementById("senha").value;
 
-    if(!email || !senha){
-      alert("Preencha e-mail e senha.");
+    if(!nome || !email || !senha){
+      alert("Preencha todos os campos.");
       return;
     }
 
     firebase.auth()
       .createUserWithEmailAndPassword(email, senha)
+      .then(cred => {
+        return db.collection("users").doc(cred.user.uid).set({
+          nome: nome,
+          email: email,
+          criadoEm: new Date()
+        });
+      })
       .then(() => {
         alert("Conta criada com sucesso! Faça login.");
         window.location.href = "login.html";
@@ -126,6 +129,7 @@
 
 </body>
 </html>
+
 
 
 
