@@ -31,7 +31,7 @@
       box-shadow:0 15px 35px rgba(0,0,0,.5)
     }
     h1{text-align:center;margin-top:0}
-    p{text-align:center;color:#cbd5f5;margin-bottom:24px}
+    p{text-align:center;color:#cbd5f5;margin-bottom:18px}
     input{
       width:100%;
       padding:14px;
@@ -48,15 +48,21 @@
       font-size:1rem;
       color:#fff;
       cursor:pointer;
-      margin-bottom:12px
+      margin-bottom:10px
     }
     .btn-login{background:#2563eb}
     .btn-cadastro{background:#16a34a}
-    footer{
-      text-align:center;
-      margin-top:18px;
+    .btn-reset{
+      background:none;
+      color:#93c5fd;
+      text-decoration:underline;
+      font-size:.9rem
+    }
+    .aviso{
       font-size:.8rem;
-      color:#94a3b8
+      color:#facc15;
+      text-align:center;
+      margin-top:10px
     }
   </style>
 </head>
@@ -69,9 +75,14 @@
     <input type="email" id="email" placeholder="E-mail">
     <input type="password" id="senha" placeholder="Senha">
 
-    <button type="button" class="btn-login" onclick="login()">Entrar</button>
-    <button type="button" class="btn-cadastro" onclick="irCadastro()">Criar conta</button>
+    <button class="btn-login" onclick="login()">Entrar</button>
+    <button class="btn-cadastro" onclick="irCadastro()">Criar conta</button>
 
+    <button class="btn-reset" onclick="resetSenha()">Esqueci minha senha</button>
+
+    <div class="aviso">
+      ⚠️ Verifique também a caixa de spam
+    </div>
   </div>
 
 <script>
@@ -84,7 +95,6 @@
     appId: "1:319086620986:web:0eee6e73ce60e50e8d2003"
   };
 
-  // 🔐 Evita erro de inicializar duas vezes
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }
@@ -96,8 +106,7 @@
     firebase.auth()
       .signInWithEmailAndPassword(email, senha)
       .then(() => {
-        alert("Login OK! Indo para o menu...");
-        window.location.href = "./index.html";
+        window.location.href = "index.html";
       })
       .catch(error => {
         alert("Erro: " + error.message);
@@ -105,10 +114,29 @@
   }
 
   function irCadastro(){
-    window.location.href = "./cadastro.html";
+    window.location.href = "cadastro.html";
+  }
+
+  function resetSenha(){
+    const email = document.getElementById("email").value;
+
+    if(!email){
+      alert("Digite seu e-mail primeiro.");
+      return;
+    }
+
+    firebase.auth()
+      .sendPasswordResetEmail(email)
+      .then(() => {
+        alert("📧 E-mail de recuperação enviado! Verifique a caixa de entrada e o SPAM.");
+      })
+      .catch(error => {
+        alert("Erro: " + error.message);
+      });
   }
 </script>
 
 </body>
 </html>
+
 
