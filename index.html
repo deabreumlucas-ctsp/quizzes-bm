@@ -118,7 +118,14 @@
   <div class="card" style="display:none" id="conteudo">
     <div class="top-bar">
       <h1>📚 Quizzes – BM/RS</h1>
-      <button class="logout" onclick="logout()">Sair</button>
+
+      <!-- 🔹 BOTÃO DE PERFIL ADICIONADO -->
+      <div>
+        <button class="logout" onclick="window.location.href='perfil.html'" style="background:#2563eb;margin-right:8px">
+          👤 Perfil
+        </button>
+        <button class="logout" onclick="logout()">Sair</button>
+      </div>
     </div>
 
     <p>CTSP - 2026</p>
@@ -178,7 +185,7 @@
     });
   }
 
-  // 💬 ENVIO DE SUGESTÃO (CORRIGIDO)
+  // 💬 ENVIO DE SUGESTÃO
   function enviarSugestao(){
     const texto = document.getElementById("sugestao").value.trim();
     const user = firebase.auth().currentUser;
@@ -211,4 +218,6 @@
 
 </body>
 </html>
+
+
 
