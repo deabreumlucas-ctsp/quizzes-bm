@@ -1,12 +1,21 @@
+<!-- 🔐 Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <script>
   const firebaseConfig = {
-    /* MESMO firebaseConfig */
+    apiKey: "AIzaSyBqgVTiFFzh0RsgD30PHqsC5H3slvKvqVY",
+    authDomain: "quizzes-bm.firebaseapp.com",
+    projectId: "quizzes-bm",
+    storageBucket: "quizzes-bm.firebasestorage.app",
+    messagingSenderId: "319086620986",
+    appId: "1:319086620986:web:0eee6e73ce60e50e8d2003"
   };
 
-  firebase.initializeApp(firebaseConfig);
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
 
   firebase.auth().onAuthStateChanged(user => {
     if (!user) {
@@ -21,6 +30,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quiz – ECA | Medidas</title>
+
   <style>
     * { box-sizing: border-box; }
     body {
@@ -99,130 +109,109 @@
       color: #fff;
     }
     .controls button:hover { opacity: .9; }
-    footer {
-      margin-top: 18px;
-      text-align: center;
-      font-size: .85rem;
-      color: #94a3b8;
-    }
+
     @media (min-width: 600px) {
       .buttons { grid-template-columns: repeat(3, 1fr); }
     }
   </style>
 </head>
+
 <body>
-  <div class="card">
-    <!-- 🔙 Botão Menu Principal -->
-<div style="display:flex; align-items:center; margin-bottom:10px;">
-  <button onclick="voltarMenu()"
-    style="
-      background:#334155;
-      color:#fff;
-      border:none;
-      border-radius:8px;
-      padding:8px 12px;
-      cursor:pointer;
-      font-size:.9rem;
-    ">
-    ⬅ Menu principal
-  </button>
-</div>
+<div class="card">
 
-    <h1>Quiz – ECA (Medidas)</h1>
-
-    <div class="question" id="question">Clique em “Próxima” para iniciar o quiz.</div>
-
-    <div class="buttons">
-      <button class="a" onclick="answer('A')">A) Medida socioeducativa (ADOLESCENTE)</button>
-      <button class="b" onclick="answer('B')">B) Medida aos PAIS ou RESPONSÁVEL</button>
-      <button class="c" onclick="answer('C')">C) Medida de PROTEÇÃO à CRIANÇA</button>
-    </div>
-
-    <div class="status" id="status"></div>
-    <div class="score" id="score">Acertos: 0 | Erros: 0</div>
-
-    <div class="controls">
-      <button onclick="nextQuestion()">▶ Próxima</button>
-      <button onclick="resetScore()">🔄 Zerar placar</button>
-    </div>
+  <!-- 🔙 Botão Menu Principal -->
+  <div style="display:flex; align-items:center; margin-bottom:10px;">
+    <button onclick="voltarMenu()"
+      style="background:#334155;color:#fff;border:none;border-radius:8px;padding:8px 12px;cursor:pointer;font-size:.9rem;">
+      ⬅ Menu principal
+    </button>
   </div>
 
+  <h1>Quiz – ECA (Medidas)</h1>
+
+  <div class="question" id="question">Clique em “Próxima” para iniciar o quiz.</div>
+
+  <div class="buttons">
+    <button class="a" onclick="answer('A')">A) Medida socioeducativa (ADOLESCENTE)</button>
+    <button class="b" onclick="answer('B')">B) Medida aos PAIS ou RESPONSÁVEL</button>
+    <button class="c" onclick="answer('C')">C) Medida de PROTEÇÃO à CRIANÇA</button>
+  </div>
+
+  <div class="status" id="status"></div>
+  <div class="score" id="score">Acertos: 0 | Erros: 0</div>
+
+  <div class="controls">
+    <button onclick="nextQuestion()">▶ Próxima</button>
+    <button onclick="resetScore()">🔄 Zerar placar</button>
+  </div>
+
+</div>
+
 <script>
-// A = ADOLESCENTE (Art. 112)
-// B = PAIS OU RESPONSÁVEL (Art. 129)
-// C = CRIANÇA – MEDIDAS DE PROTEÇÃO (Art. 101)
+// A = ADOLESCENTE | B = PAIS | C = CRIANÇA
 
 const questions = [
-  // ===== ART. 112 – MEDIDAS SOCIOEDUCATIVAS (ADOLESCENTE) =====
-  { t: "Advertência aplicada ao adolescente", a:'A' },
-  { t: "Obrigação de reparar o dano", a:'A' },
-  { t: "Prestação de serviços à comunidade (máx. 6 meses e 8h semanais)", a:'A' },
-  { t: "Liberdade assistida (mínimo 6 meses)", a:'A' },
-  { t: "Inserção em regime de semiliberdade", a:'A' },
-  { t: "Internação em estabelecimento educacional (máx. 3 anos, reavaliação semestral)", a:'A' },
-  { t: "Aplicação cumulativa de medidas do art. 101, I a VI ao adolescente", a:'A' },
+  { t:"Advertência aplicada ao adolescente", a:'A' },
+  { t:"Obrigação de reparar o dano", a:'A' },
+  { t:"Prestação de serviços à comunidade", a:'A' },
+  { t:"Liberdade assistida", a:'A' },
+  { t:"Inserção em regime de semiliberdade", a:'A' },
+  { t:"Internação em estabelecimento educacional", a:'A' },
+  { t:"Aplicação cumulativa de medidas do art. 101 ao adolescente", a:'A' },
 
-  // ===== ART. 129 – MEDIDAS AOS PAIS OU RESPONSÁVEL =====
-  { t: "Encaminhamento a serviços ou programas de proteção e apoio à família", a:'B' },
-  { t: "Inclusão em programa de auxílio, orientação e tratamento a alcoólatras e toxicômanos", a:'B' },
-  { t: "Encaminhamento a tratamento psicológico ou psiquiátrico", a:'B' },
-  { t: "Encaminhamento a cursos ou programas de orientação", a:'B' },
-  { t: "Obrigação de matricular o filho ou pupilo e acompanhar frequência escolar", a:'B' },
-  { t: "Obrigação de encaminhar a criança ou adolescente a tratamento especializado", a:'B' },
-  { t: "Advertência aplicada aos pais ou responsável", a:'B' },
-  { t: "Perda da guarda", a:'B' },
-  { t: "Destituição da tutela", a:'B' },
-  { t: "Suspensão ou destituição do poder familiar", a:'B' },
+  { t:"Encaminhamento a programas de proteção à família", a:'B' },
+  { t:"Tratamento a alcoólatras e toxicômanos", a:'B' },
+  { t:"Tratamento psicológico ou psiquiátrico", a:'B' },
+  { t:"Cursos ou programas de orientação", a:'B' },
+  { t:"Obrigação de acompanhar frequência escolar", a:'B' },
+  { t:"Advertência aos pais ou responsável", a:'B' },
+  { t:"Perda da guarda", a:'B' },
+  { t:"Suspensão do poder familiar", a:'B' },
 
-  // ===== ART. 101 – MEDIDAS DE PROTEÇÃO À CRIANÇA =====
-  { t: "Encaminhamento aos pais ou responsável, mediante termo de responsabilidade", a:'C' },
-  { t: "Orientação, apoio e acompanhamento temporários", a:'C' },
-  { t: "Matrícula e frequência obrigatórias em estabelecimento oficial de ensino fundamental", a:'C' },
-  { t: "Requisição de tratamento médico, psicológico ou psiquiátrico, inclusive à família", a:'C' },
-  { t: "Inclusão em programa de auxílio, orientação e tratamento a alcoólatras e toxicômanos", a:'C' },
-  { t: "Acolhimento institucional", a:'C' },
-  { t: "Inclusão em programa de acolhimento familiar", a:'C' },
-  { t: "Colocação em família substituta", a:'C' }
+  { t:"Encaminhamento aos pais mediante termo", a:'C' },
+  { t:"Orientação e acompanhamento temporários", a:'C' },
+  { t:"Matrícula e frequência obrigatória", a:'C' },
+  { t:"Tratamento médico ou psicológico", a:'C' },
+  { t:"Acolhimento institucional", a:'C' },
+  { t:"Colocação em família substituta", a:'C' }
 ];
 
-let current = null;
-let hits = 0;
-let errors = 0;
+let current=null, hits=0, errors=0;
 
-function nextQuestion() {
-  current = questions[Math.floor(Math.random() * questions.length)];
-  document.getElementById('question').innerText = current.t;
-  document.getElementById('status').innerText = '';
+function nextQuestion(){
+  current = questions[Math.floor(Math.random()*questions.length)];
+  document.getElementById("question").innerText = current.t;
+  document.getElementById("status").innerText = "";
 }
 
-function answer(opt) {
-  if (!current) return;
-  if (opt === current.a) {
+function answer(opt){
+  if(!current) return;
+
+  if(opt === current.a){
     hits++;
-    document.getElementById('status').innerText = '✅ Correto';
+    document.getElementById("status").innerText = "✅ Correto";
   } else {
     errors++;
-    const map = {
-      A: 'Medida socioeducativa (Art. 112 – Adolescente)',
-      B: 'Medida aos pais ou responsável (Art. 129)',
-      C: 'Medida de proteção à criança (Art. 101)'
-    };
-    document.getElementById('status').innerText = `❌ Errado – resposta correta: ${map[current.a]}`;
+    document.getElementById("status").innerText = "❌ Errado";
   }
-  document.getElementById('score').innerText = `Acertos: ${hits} | Erros: ${errors}`;
+
+  document.getElementById("score").innerText = `Acertos: ${hits} | Erros: ${errors}`;
+
+  // ✅ SALVA AUTOMATICAMENTE
+  salvarResultadoQuiz("eca");
 }
 
 function resetScore(){
-  salvarResultadoQuiz("eca"); // 👈 nome do quiz
   hits = 0;
   errors = 0;
-  document.getElementById('score').innerText = `Acertos: ${hits} | Erros: ${errors}`;
-  document.getElementById('status').innerText = '';
+  document.getElementById("score").innerText = `Acertos: ${hits} | Erros: ${errors}`;
+  document.getElementById("status").innerText = "";
 }
 
-  function voltarMenu(){
+function voltarMenu(){
   window.location.href = "index.html";
 }
+
 function salvarResultadoQuiz(nomeQuiz){
   const user = firebase.auth().currentUser;
   if (!user) return;
@@ -239,10 +228,12 @@ function salvarResultadoQuiz(nomeQuiz){
     }
   }, { merge: true });
 }
-
 </script>
+
 </body>
 </html>
+
+
 
 
 
