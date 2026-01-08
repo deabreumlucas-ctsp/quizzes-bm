@@ -192,12 +192,14 @@ function answer(opt) {
   document.getElementById('score').innerText = `Acertos: ${hits} | Erros: ${errors}`;
 }
 
-function resetScore() {
+function resetScore(){
+  salvarResultadoQuiz("direitoseprerrogativas"); // 👈 nome do quiz
   hits = 0;
   errors = 0;
   document.getElementById('score').innerText = `Acertos: ${hits} | Erros: ${errors}`;
   document.getElementById('status').innerText = '';
 }
+
   function voltarMenu(){
   window.location.href = "index.html";
 }
@@ -223,6 +225,7 @@ function salvarResultadoQuiz(nomeQuiz){
 </body>
 
 </html>
+
 
 
 
