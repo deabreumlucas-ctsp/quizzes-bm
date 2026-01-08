@@ -224,10 +224,27 @@ function resetScore() {
   function voltarMenu(){
   window.location.href = "index.html";
 }
+function salvarResultadoQuiz(nomeQuiz){
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+
+  const db = firebase.firestore();
+
+  db.collection("users").doc(user.uid).set({
+    quizzes: {
+      [nomeQuiz]: {
+        acertos: hits,
+        erros: errors,
+        atualizadoEm: new Date()
+      }
+    }
+  }, { merge: true });
+}
 
 </script>
 </body>
 </html>
+
 
 
 
