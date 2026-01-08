@@ -72,6 +72,15 @@
       border-color:#1e293b;
       margin:24px 0
     }
+
+    .quiz-box{
+      background:#020617;
+      border:1px solid #1e293b;
+      border-radius:10px;
+      padding:10px;
+      margin-bottom:10px;
+      font-size:.95rem
+    }
   </style>
 </head>
 
@@ -94,6 +103,14 @@
   <input type="text" id="novoNome" placeholder="Digite um novo nome">
 
   <button class="btn-salvar" onclick="salvarNome()">Salvar nome</button>
+
+  <hr>
+
+  <!-- 📊 DESEMPENHO -->
+  <h3 style="text-align:center;margin-bottom:10px">📊 Meu desempenho nos quizzes</h3>
+  <div id="desempenho" style="text-align:center;color:#cbd5f5">
+    Carregando desempenho...
+  </div>
 
   <hr>
 
@@ -139,10 +156,38 @@
 
     db.collection("users").doc(user.uid).get().then(doc => {
       if (doc.exists) {
-        document.getElementById("nomeAtual").innerText = doc.data().nome || "Não definido";
+        document.getElementById("nomeAtual").innerText =
+          doc.data().nome || "Não definido";
+
+        carregarDesempenho(doc.data().quizzes);
+      } else {
+        document.getElementById("desempenho").innerText =
+          "Nenhum quiz realizado ainda.";
       }
     });
   });
+
+  function carregarDesempenho(quizzes){
+    if (!quizzes) {
+      document.getElementById("desempenho").innerText =
+        "Nenhum quiz realizado ainda.";
+      return;
+    }
+
+    let html = "";
+
+    for (const quiz in quizzes) {
+      html += `
+        <div class="quiz-box">
+          <strong>${quiz}</strong><br>
+          ✔ Acertos: ${quizzes[quiz].acertos}<br>
+          ❌ Erros: ${quizzes[quiz].erros}
+        </div>
+      `;
+    }
+
+    document.getElementById("desempenho").innerHTML = html;
+  }
 
   function salvarNome(){
     const user = firebase.auth().currentUser;
@@ -186,9 +231,7 @@
     );
 
     user.reauthenticateWithCredential(credencial)
-      .then(() => {
-        return user.updatePassword(novaSenha);
-      })
+      .then(() => user.updatePassword(novaSenha))
       .then(() => {
         alert("Senha alterada com sucesso!");
         document.getElementById("senhaAtual").value = "";
