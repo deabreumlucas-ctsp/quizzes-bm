@@ -101,7 +101,6 @@
 
   <label>Alterar nome</label>
   <input type="text" id="novoNome" placeholder="Digite um novo nome">
-
   <button class="btn-salvar" onclick="salvarNome()">Salvar nome</button>
 
   <hr>
@@ -126,7 +125,6 @@
   <input type="password" id="confirmarSenha" placeholder="Confirmar nova senha">
 
   <button class="btn-senha" onclick="alterarSenha()">Alterar senha</button>
-
   <button class="voltar" onclick="voltar()">Voltar ao menu</button>
 </div>
 
@@ -145,6 +143,17 @@
   }
 
   const db = firebase.firestore();
+
+  // 🔤 MAPA DE NOMES BONITOS DOS QUIZZES
+  const nomesQuizzes = {
+    competenciauniaoeconcorrente: "Quiz – Competência Privativa × Concorrente",
+    direitoseprerrogativas: "Quiz – Direitos e Prerrogativas",
+    eca: "Quiz – ECA (Medidas)",
+    exclusivauniaoecomum: "Quiz – Competência Exclusiva × Comum",
+    leideimprobidade: "Quiz – Lei de Improbidade Administrativa",
+    transgressoes: "Quiz – Transgressões Disciplinares",
+    valoreticaedever: "Quiz – Valor, Ética e Dever"
+  };
 
   firebase.auth().onAuthStateChanged(user => {
     if (!user) {
@@ -177,9 +186,11 @@
     let html = "";
 
     for (const quiz in quizzes) {
+      const nomeBonito = nomesQuizzes[quiz] || quiz;
+
       html += `
         <div class="quiz-box">
-          <strong>${quiz}</strong><br>
+          <strong>${nomeBonito}</strong><br>
           ✔ Acertos: ${quizzes[quiz].acertos}<br>
           ❌ Erros: ${quizzes[quiz].erros}
         </div>
@@ -251,3 +262,4 @@
 
 </body>
 </html>
+
