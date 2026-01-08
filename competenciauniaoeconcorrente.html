@@ -115,7 +115,7 @@
 
   <h1>Quiz – Competência Privativa x Concorrente (CF)</h1>
 
-  <div class="question" id="question">Clique em “Próxima” para iniciar o quiz.</div>
+  <div class="question" id="question">Carregando pergunta...</div>
 
   <div class="buttons">
     <button class="a" onclick="answer('A')">A) Privativa da União (Art. 22)</button>
@@ -133,8 +133,6 @@
 </div>
 
 <script>
-// A = ART. 22 (PRIVATIVA) | B = ART. 24 (CONCORRENTE)
-
 const questions = [
   { t:"direito civil, comercial, penal, processual, eleitoral, agrário, marítimo, aeronáutico, espacial e do trabalho;", a:'A' },
   { t:"desapropriação;", a:'A' },
@@ -190,7 +188,7 @@ let hits = 0;
 let errors = 0;
 
 function nextQuestion(){
-  current = questions[Math.floor(Math.random()*questions.length)];
+  current = questions[Math.floor(Math.random() * questions.length)];
   document.getElementById("question").innerText = current.t;
   document.getElementById("status").innerText = "";
 }
@@ -209,7 +207,6 @@ function answer(opt){
   document.getElementById("score").innerText =
     `Acertos: ${hits} | Erros: ${errors}`;
 
-  // ✅ SALVA IGUAL AO QUIZ DO ECA
   salvarResultadoQuiz("competenciauniaoeconcorrente");
 }
 
@@ -229,9 +226,7 @@ function salvarResultadoQuiz(nomeQuiz){
   const user = firebase.auth().currentUser;
   if (!user) return;
 
-  const db = firebase.firestore();
-
-  db.collection("users").doc(user.uid).set({
+  firebase.firestore().collection("users").doc(user.uid).set({
     quizzes: {
       [nomeQuiz]: {
         acertos: hits,
@@ -241,10 +236,14 @@ function salvarResultadoQuiz(nomeQuiz){
     }
   }, { merge: true });
 }
+
+// ✅ INICIALIZA O QUIZ
+window.onload = nextQuestion;
 </script>
 
 </body>
 </html>
+
 
 
 
