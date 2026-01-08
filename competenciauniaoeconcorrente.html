@@ -67,6 +67,22 @@
 </head>
 <body>
 <div class="card">
+  <!-- 🔙 Botão Menu Principal -->
+<div style="display:flex; align-items:center; margin-bottom:10px;">
+  <button onclick="voltarMenu()"
+    style="
+      background:#334155;
+      color:#fff;
+      border:none;
+      border-radius:8px;
+      padding:8px 12px;
+      cursor:pointer;
+      font-size:.9rem;
+    ">
+    ⬅ Menu principal
+  </button>
+</div>
+
   <h1>Quiz – Competência Privativa x Concorrente (CF)</h1>
 
   <div class="question" id="question">Clique em “Próxima” para iniciar o quiz.</div>
@@ -141,10 +157,15 @@ let current=null, hits=0, errors=0;
 function nextQuestion(){ current=questions[Math.floor(Math.random()*questions.length)]; document.getElementById('question').innerText=current.t; document.getElementById('status').innerText=''; }
 function answer(opt){ if(!current) return; if(opt===current.a){ hits++; document.getElementById('status').innerText='✅ Correto'; } else { errors++; document.getElementById('status').innerText=`❌ Errado – resposta correta: ${current.a==='A'?'Privativa (Art.22)':'Concorrente (Art.24)'}`; } document.getElementById('score').innerText=`Acertos: ${hits} | Erros: ${errors}`; }
 function resetScore(){ hits=0; errors=0; document.getElementById('score').innerText=`Acertos: ${hits} | Erros: ${errors}`; document.getElementById('status').innerText=''; }
+  function voltarMenu(){
+  window.location.href = "index.html";
+}
+
 </script>
 </body>
 
 </html>
+
 
 
 
