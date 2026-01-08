@@ -106,6 +106,22 @@
 </head>
 <body>
   <div class="card">
+    <!-- 🔙 Botão Menu Principal -->
+<div style="display:flex; align-items:center; margin-bottom:10px;">
+  <button onclick="voltarMenu()"
+    style="
+      background:#334155;
+      color:#fff;
+      border:none;
+      border-radius:8px;
+      padding:8px 12px;
+      cursor:pointer;
+      font-size:.9rem;
+    ">
+    ⬅ Menu principal
+  </button>
+</div>
+
     <h1>Quiz de Transgressões Disciplinares – BM/RS</h1>
 
     <div class="question" id="question">Clique em “Próxima” para iniciar o quiz.</div>
@@ -278,9 +294,14 @@ function resetScore() {
   document.getElementById('score').innerText = `Acertos: ${hits} | Erros: ${errors}`;
   document.getElementById('status').innerText = '';
 }
+  function voltarMenu(){
+  window.location.href = "index.html";
+}
+
 </script>
 </body>
 </html>
+
 
 
 
