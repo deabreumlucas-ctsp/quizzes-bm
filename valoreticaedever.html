@@ -226,21 +226,21 @@ function salvarResultadoQuiz(nomeQuiz){
 
   const db = firebase.firestore();
 
-  db.collection("users").doc(user.uid).set({
-    quizzes: {
-      [nomeQuiz]: {
-        acertos: hits,
-        erros: errors,
-        atualizadoEm: new Date()
-      }
-    }
-  }, { merge: true });
+ db.collection("users").doc(user.uid).set({
+  [`quizzes.${nomeQuiz}`]: {
+    acertos: hits,
+    erros: errors,
+    atualizadoEm: new Date()
+  }
+}, { merge: true });
+
 }
 
 </script>
 </body>
 
 </html>
+
 
 
 
