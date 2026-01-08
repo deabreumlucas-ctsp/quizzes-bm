@@ -157,8 +157,24 @@ const questions = [
 
 let current=null, hits=0, errors=0;
 function nextQuestion(){ current=questions[Math.floor(Math.random()*questions.length)]; document.getElementById('question').innerText=current.t; document.getElementById('status').innerText=''; }
-function answer(opt){ if(!current) return; if(opt===current.a){ hits++; document.getElementById('status').innerText='✅ Correto'; } else { errors++; document.getElementById('status').innerText=`❌ Errado – resposta correta: ${current.a==='A'?'Privativa (Art.22)':'Concorrente (Art.24)'}`; } document.getElementById('score').innerText=`Acertos: ${hits} | Erros: ${errors}`; }
-function resetScore(){
+function answer(opt) {
+  if (!current) return;
+
+  if (opt === current.a) {
+    hits++;
+    document.getElementById('status').innerText = '✅ Correto';
+  } else {
+    errors++;
+    document.getElementById('status').innerText = '❌ Errado';
+  }
+
+  document.getElementById('score').innerText =
+    `Acertos: ${hits} | Erros: ${errors}`;
+
+  // ✅ SALVA IGUAL AO ECA
+  salvarResultadoQuiz("competenciauniaoeconcorrente");
+}
+
   salvarResultadoQuiz("competenciauniaoeconcorrente"); // 👈 nome do quiz
   hits = 0;
   errors = 0;
@@ -191,6 +207,7 @@ function salvarResultadoQuiz(nomeQuiz){
 </body>
 
 </html>
+
 
 
 
