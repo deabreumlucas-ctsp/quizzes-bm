@@ -2,13 +2,19 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
-
 <script>
   const firebaseConfig = {
-    /* MESMO firebaseConfig */
+    apiKey: "AIzaSyBqgVTiFFzh0RsgD30PHqsC5H3slvKvqVY",
+    authDomain: "quizzes-bm.firebaseapp.com",
+    projectId: "quizzes-bm",
+    storageBucket: "quizzes-bm.firebasestorage.app",
+    messagingSenderId: "319086620986",
+    appId: "1:319086620986:web:0eee6e73ce60e50e8d2003"
   };
 
-  firebase.initializeApp(firebaseConfig);
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
 
   firebase.auth().onAuthStateChanged(user => {
     if (!user) {
@@ -23,6 +29,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quiz – Competência Privativa x Concorrente</title>
+
   <style>
     * { box-sizing: border-box; }
     body {
@@ -46,44 +53,65 @@
     }
     h1 { margin-top:0; font-size:1.4rem; text-align:center; }
     .question {
-      font-size:1.05rem; line-height:1.5; margin:20px 0; padding:14px;
-      background:#020617; border:1px solid #1e293b; border-radius:10px;
+      font-size:1.05rem;
+      line-height:1.5;
+      margin:20px 0;
+      padding:14px;
+      background:#020617;
+      border:1px solid #1e293b;
+      border-radius:10px;
     }
-    .buttons { display:grid; grid-template-columns:1fr; gap:10px; }
+    .buttons {
+      display:grid;
+      grid-template-columns:1fr;
+      gap:10px;
+    }
     .buttons button {
-      padding:14px; font-size:1rem; border:none; border-radius:10px; cursor:pointer; color:#fff;
+      padding:14px;
+      font-size:1rem;
+      border:none;
+      border-radius:10px;
+      cursor:pointer;
+      color:#fff;
     }
     .a { background:#2563eb; }
     .b { background:#16a34a; }
     .buttons button:active { transform:scale(.98); }
     .status { margin-top:15px; font-size:1rem; min-height:1.4em; }
     .score { margin-top:10px; font-weight:bold; text-align:center; }
-    .controls { display:flex; gap:10px; flex-wrap:wrap; margin-top:20px; }
-    .controls button {
-      flex:1; padding:12px; border-radius:10px; border:none; cursor:pointer;
-      background:#334155; color:#fff;
+    .controls {
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:20px;
     }
-    .controls button:hover { opacity:.9; }
-    @media (min-width:600px){ .buttons{ grid-template-columns:repeat(2,1fr);} }
-  </style>
-</head>
-<body>
-<div class="card">
-  <!-- 🔙 Botão Menu Principal -->
-<div style="display:flex; align-items:center; margin-bottom:10px;">
-  <button onclick="voltarMenu()"
-    style="
+    .controls button {
+      flex:1;
+      padding:12px;
+      border-radius:10px;
+      border:none;
+      cursor:pointer;
       background:#334155;
       color:#fff;
-      border:none;
-      border-radius:8px;
-      padding:8px 12px;
-      cursor:pointer;
-      font-size:.9rem;
-    ">
-    ⬅ Menu principal
-  </button>
-</div>
+    }
+    .controls button:hover { opacity:.9; }
+
+    @media (min-width:600px){
+      .buttons{ grid-template-columns:repeat(2,1fr); }
+    }
+  </style>
+</head>
+
+<body>
+<div class="card">
+
+  <!-- 🔙 Botão Menu Principal -->
+  <div style="display:flex; align-items:center; margin-bottom:10px;">
+    <button onclick="voltarMenu()"
+      style="background:#334155;color:#fff;border:none;border-radius:8px;padding:8px 12px;cursor:pointer;font-size:.9rem;">
+      ⬅ Menu principal
+    </button>
+  </div>
 
   <h1>Quiz – Competência Privativa x Concorrente (CF)</h1>
 
@@ -101,10 +129,12 @@
     <button onclick="nextQuestion()">▶ Próxima</button>
     <button onclick="resetScore()">🔄 Zerar placar</button>
   </div>
+
 </div>
 
 <script>
 // A = ART. 22 (PRIVATIVA) | B = ART. 24 (CONCORRENTE)
+
 const questions = [
   { t:"direito civil, comercial, penal, processual, eleitoral, agrário, marítimo, aeronáutico, espacial e do trabalho;", a:'A' },
   { t:"desapropriação;", a:'A' },
@@ -155,36 +185,46 @@ const questions = [
   { t:"organização, garantias, direitos e deveres das polícias civis.", a:'B' }
 ];
 
-let current=null, hits=0, errors=0;
-function nextQuestion(){ current=questions[Math.floor(Math.random()*questions.length)]; document.getElementById('question').innerText=current.t; document.getElementById('status').innerText=''; }
-function answer(opt) {
+let current = null;
+let hits = 0;
+let errors = 0;
+
+function nextQuestion(){
+  current = questions[Math.floor(Math.random()*questions.length)];
+  document.getElementById("question").innerText = current.t;
+  document.getElementById("status").innerText = "";
+}
+
+function answer(opt){
   if (!current) return;
 
   if (opt === current.a) {
     hits++;
-    document.getElementById('status').innerText = '✅ Correto';
+    document.getElementById("status").innerText = "✅ Correto";
   } else {
     errors++;
-    document.getElementById('status').innerText = '❌ Errado';
+    document.getElementById("status").innerText = "❌ Errado";
   }
 
-  document.getElementById('score').innerText =
+  document.getElementById("score").innerText =
     `Acertos: ${hits} | Erros: ${errors}`;
 
-  // ✅ SALVA IGUAL AO ECA
+  // ✅ SALVA IGUAL AO QUIZ DO ECA
   salvarResultadoQuiz("competenciauniaoeconcorrente");
 }
 
-  salvarResultadoQuiz("competenciauniaoeconcorrente"); // 👈 nome do quiz
+function resetScore(){
   hits = 0;
   errors = 0;
-  document.getElementById('score').innerText = `Acertos: ${hits} | Erros: ${errors}`;
-  document.getElementById('status').innerText = '';
+  document.getElementById("score").innerText =
+    `Acertos: ${hits} | Erros: ${errors}`;
+  document.getElementById("status").innerText = "";
 }
 
-  function voltarMenu(){
+function voltarMenu(){
   window.location.href = "index.html";
 }
+
 function salvarResultadoQuiz(nomeQuiz){
   const user = firebase.auth().currentUser;
   if (!user) return;
@@ -201,14 +241,10 @@ function salvarResultadoQuiz(nomeQuiz){
     }
   }, { merge: true });
 }
-
-  
 </script>
+
 </body>
-
 </html>
-
-
 
 
 
